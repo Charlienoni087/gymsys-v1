@@ -1,0 +1,245 @@
+:root {
+            --amarillo: #ffd600;
+            --amarillo-claro: #ffe24d;
+            --negro: #0d0d0d;
+            --gris: #4a4a4a;
+            --papel: #ffffff;
+            --tinta: #161616;
+            --suave: #6a6a6a;
+            --linea: #d9d9d3;
+            --error: #c62828;
+        }
+
+        body {
+            background: var(--gris);
+            font-family: 'Barlow', system-ui, sans-serif;
+            color: var(--tinta);
+        }
+
+        .pagina {
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        /* ---------- Tarjeta principal ---------- */
+        .instalador-shell {
+            width: 100%;
+            max-width: 980px;
+            background: var(--papel);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, .4);
+        }
+
+        /* ---------- Panel de marca (solo escritorio) ---------- */
+        .panel-marca {
+            position: relative;
+            overflow: hidden;
+            background: var(--negro);
+            color: #fff;
+            padding: 3rem;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 640px;
+        }
+        .panel-marca::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: repeating-radial-gradient(
+                circle at 88% 108%,
+                transparent 0 46px,
+                rgba(255, 214, 0, .14) 46px 48px
+            );
+            pointer-events: none;
+        }
+        .disco {
+            position: absolute;
+            right: -80px;
+            bottom: -80px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: var(--amarillo);
+        }
+        .disco::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 64px;
+            height: 64px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: var(--negro);
+        }
+
+        .marca-logo {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+        }
+        .marca-logo img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .marca-logo span {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 1.75rem;
+            letter-spacing: .02em;
+        }
+
+        .marca-texto {
+            position: relative;
+            max-width: 22rem;
+        }
+        .marca-texto h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2.5rem, 4.2vw, 3.6rem);
+            line-height: 1;
+            margin: 0 0 1rem;
+        }
+        .marca-texto p {
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, .72);
+        }
+
+        /* ---------- Panel del formulario ---------- */
+        .panel-form {
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-interior {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .logo-movil {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 1.25rem;
+        }
+
+        .panel-form h2 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 2.4rem;
+            line-height: 1.05;
+            margin-bottom: .4rem;
+        }
+        .subtitulo {
+            color: var(--suave);
+            margin-bottom: 1.75rem;
+        }
+
+        /* ---------- Campos ---------- */
+        .campo { margin-bottom: 1.15rem; }
+
+        .campo label {
+            display: block;
+            font-weight: 600;
+            font-size: .95rem;
+            margin-bottom: .4rem;
+        }
+
+        .entrada { position: relative; }
+
+        .entrada .icono {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: var(--suave);
+            pointer-events: none;
+            transition: color .2s ease;
+        }
+        .entrada:focus-within .icono { color: var(--negro); }
+
+        .entrada .form-control {
+            height: 3.1rem;
+            padding-left: 2.85rem;
+            border: 1.5px solid var(--linea);
+            border-radius: .75rem;
+            background: #fafaf8;
+            font-size: 1rem;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .entrada .form-control::placeholder { color: #a5a5a0; }
+        .entrada .form-control:focus {
+            background: #fff;
+            border-color: var(--negro);
+            box-shadow: 0 0 0 .25rem rgba(255, 214, 0, .5);
+        }
+        .entrada .form-control.con-boton { padding-right: 3.1rem; }
+
+        .btn-ojo {
+            position: absolute;
+            top: 50%;
+            right: .35rem;
+            transform: translateY(-50%);
+            width: 2.4rem;
+            height: 2.4rem;
+            border: 0;
+            border-radius: .55rem;
+            background: transparent;
+            color: var(--suave);
+        }
+        .btn-ojo:hover { background: rgba(0, 0, 0, .06); color: var(--negro); }
+        .btn-ojo:focus-visible { outline: 3px solid var(--amarillo); }
+
+        .mensaje-error {
+            display: none;
+            margin-top: .4rem;
+            color: var(--error);
+            font-size: .875rem;
+        }
+        .campo.tiene-error .mensaje-error { display: block; }
+        .campo.tiene-error .form-control { border-color: var(--error); }
+        .campo.tiene-error .form-control:focus {
+            box-shadow: 0 0 0 .25rem rgba(198, 40, 40, .2);
+        }
+
+        /* ---------- Botón ---------- */
+        .btn-instalar {
+            width: 100%;
+            height: 3.2rem;
+            margin-top: .5rem;
+            border: 0;
+            border-radius: .75rem;
+            background: var(--amarillo);
+            color: var(--negro);
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .btn-instalar:hover {
+            background: var(--amarillo-claro);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(13, 13, 13, .2);
+        }
+        .btn-instalar:active { transform: translateY(0); box-shadow: none; }
+        .btn-instalar:focus-visible { outline: 3px solid var(--negro); outline-offset: 3px; }
+        .btn-instalar:disabled { opacity: .8; transform: none; box-shadow: none; }
+
+        /* ---------- Móvil ---------- */
+        @media (max-width: 575.98px) {
+            .pagina { padding: 1rem; }
+            .panel-form { padding: 2rem 1.5rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }

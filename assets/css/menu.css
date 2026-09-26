@@ -1,0 +1,180 @@
+:root {
+    --gym-negro: #0d0d0d;
+    --gym-amarillo: #ffd600;
+    --gym-amarillo-osc: #e6c000;
+    --gym-gris: #4a4a4a;
+    --gym-gris-claro: #e5e5e5;
+}
+
+body {
+    background: var(--gym-gris);
+    color: #ffffff;
+}
+
+#sidebarMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    width: 250px;
+    height: 100vh;
+    padding: 1.5rem 0 1rem;
+    background: var(--gym-negro);
+    border-right: 3px solid var(--gym-amarillo);
+    transition: transform .3s;
+}
+#sidebarMenu.oculto { transform: translateX(-100%); }
+
+#sidebarMenu > div:first-child {
+    margin-bottom: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--gym-gris);
+    text-align: center;
+}
+#sidebarMenu .logo {
+    display: block;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+#sidebarMenu .nav { flex: 1 1 auto; }
+
+.btn-nav {
+    display: flex;
+    align-items: center;
+    margin: .2rem .9rem;
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    color: var(--gym-gris-claro);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .2s, color .2s;
+}
+.btn-nav i { transition: transform .2s; }
+
+.btn-nav:hover {
+    background: var(--gym-gris);
+    color: var(--gym-amarillo);
+}
+.btn-nav:hover i { transform: translateX(3px); }
+
+.btn-nav.active {
+    background: var(--gym-amarillo);
+    color: var(--gym-negro);
+    font-weight: 700;
+}
+.btn-nav.active i { transform: none; }
+
+.btn-nav:focus-visible,
+.btn-logout:focus-visible,
+.btn-hamburger:focus-visible {
+    outline: 2px solid var(--gym-amarillo);
+    outline-offset: 2px;
+}
+
+.userCard {
+    margin-top: auto;
+    padding: 1rem .9rem 0;
+    border-top: 1px solid var(--gym-gris);
+}
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .65rem 1rem;
+    border: 1px solid var(--gym-gris);
+    border-radius: 10px;
+    color: var(--gym-gris-claro);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .2s, color .2s, border-color .2s;
+}
+.btn-logout:hover {
+    background: var(--gym-gris);
+    border-color: var(--gym-amarillo);
+    color: var(--gym-amarillo);
+}
+
+.content-frame {
+    min-height: 100vh;
+    margin-left: 250px;
+    padding: 1.25rem 1.5rem;
+    transition: margin .3s;
+}
+.content-frame.expandido { margin-left: 0; }
+
+.btn-hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 1rem;
+    border: 0;
+    border-radius: 10px;
+    background: var(--gym-negro);
+    color: var(--gym-amarillo);
+    font-size: 1.6rem;
+    transition: background .2s, color .2s;
+}
+.btn-hamburger:hover {
+    background: var(--gym-amarillo);
+    color: var(--gym-negro);
+}
+
+.main-content {
+    padding: 1.5rem;
+    border: 1px solid var(--gym-amarillo);
+    border-radius: 12px;
+    background: var(--gym-negro);
+    color: var(--gym-gris-claro);
+    min-height: 100vh;
+    
+    box-shadow: 0 2px 10px rgba(13, 13, 13, .08);
+}
+.main-content h2 { font-weight: 700; color: var(--gym-gris-claro)}
+
+.btn { border-radius: 10px; font-weight: 600; }
+
+.btn-primary,
+#modalLogout .btn-danger {
+    --bs-btn-color: var(--gym-negro);
+    --bs-btn-bg: var(--gym-amarillo);
+    --bs-btn-border-color: var(--gym-amarillo);
+    --bs-btn-hover-color: var(--gym-negro);
+    --bs-btn-hover-bg: var(--gym-amarillo-osc);
+    --bs-btn-hover-border-color: var(--gym-amarillo-osc);
+    --bs-btn-active-color: var(--gym-negro);
+    --bs-btn-active-bg: var(--gym-amarillo-osc);
+    --bs-btn-active-border-color: var(--gym-amarillo-osc);
+    --bs-btn-focus-shadow-rgb: 255, 214, 0;
+}
+
+.btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--gym-gris);
+    --bs-btn-border-color: var(--gym-gris);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #3a3a3a;
+    --bs-btn-hover-border-color: #3a3a3a;
+    --bs-btn-active-bg: #3a3a3a;
+    --bs-btn-active-border-color: #3a3a3a;
+}
+
+#modalLogout .modal-content {
+    border: 0;
+    border-top: 4px solid var(--gym-amarillo);
+    border-radius: 14px;
+    background: var(--gym-negro);
+    color: var(--gym-gris-claro);
+}
+#modalLogout .text-danger { color: var(--gym-amarillo) !important; }
+#modalLogout .text-muted { color: var(--gym-gris-claro) !important; opacity: .7; }
+
+@media (prefers-reduced-motion: reduce) {
+    #sidebarMenu, .content-frame, .btn-nav, .btn-nav i { transition: none; }
+}

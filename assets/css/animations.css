@@ -1,0 +1,163 @@
+/* Animaciones de login */
+.pagina {
+     animation: fadeIn 0.5s ease-in-out;
+ }
+
+@keyframes fadeIn {
+     from {
+         opacity: 0;
+         transform:translateY(-30px);
+     }
+     to {
+         opacity: 1;
+         transform:translateY(0);
+     }
+ }
+
+ .marca-logo
+ .marca-texto{
+    animation: logo 0.5s ease-in-out;
+ }
+
+@keyframes logo {
+    0% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.form-interior{
+    animation: form 0.5s ease-in-out;
+}
+
+@keyframes form {
+    0% {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/*Animaciones del contenido principal*/
+
+.nav-animado {
+    animation: nav 0.8s ease-out 1 forwards;
+}
+
+@keyframes nav {
+    0% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.main-content {
+    animation: mainContent 0.8s ease-in-out;
+}
+
+@keyframes mainContent {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.content-frame {
+    position: relative;
+    overflow: hidden; 
+}
+
+/* Transición de módulos con pesas */
+#transicion {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+    background: #0D0D0D;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.pesa {
+    position: absolute;
+    font-size: 5rem;
+    color: #FFD600;
+}
+
+#transicion.cubriendo {
+    visibility: visible;
+    animation: fondoIn 0.4s ease forwards;
+}
+
+#transicion.cubriendo .pesa-izq {
+    animation: izqIn 0.5s ease-out forwards;
+}
+
+#transicion.cubriendo .pesa-der {
+    animation: derIn 0.5s ease-out forwards;
+}
+
+#transicion.revelando {
+    visibility: visible;
+    opacity: 1;
+    animation: fondoOut 0.5s ease 0.2s forwards;
+}
+
+#transicion.revelando .pesa-izq {
+    transform: rotate(45deg);
+    animation: izqOut 0.5s ease-in 0.2s forwards;
+}
+
+#transicion.revelando .pesa-der {
+    transform: rotate(-45deg);
+    animation: derOut 0.5s ease-in 0.2s forwards;
+}
+
+@keyframes fondoIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fondoOut {
+    from { opacity: 1; }
+    to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes izqIn {
+    from { transform: translateX(-120%) rotate(45deg); }
+    to { transform: translateX(0) rotate(45deg); }
+}
+
+@keyframes derIn {
+    from { transform: translateX(120%) rotate(-45deg); }
+    to { transform: translateX(0) rotate(-45deg); }
+}
+
+@keyframes izqOut {
+    from { transform: translateX(0) rotate(45deg); }
+    to { transform: translateX(-120%) rotate(45deg); }
+}
+
+@keyframes derOut {
+    from { transform: translateX(0) rotate(-45deg); }
+    to { transform: translateX(120%) rotate(-45deg); }
+}
