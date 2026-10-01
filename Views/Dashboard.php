@@ -11,6 +11,8 @@ if (!function_exists('gym_e')) {
 $moneda        = '$';
 $nombreUsuario = $_SESSION['nombre'] ?? 'Administrador';
 
+
+
 $stats = [
     ['icono' => 'bi-people-fill',         'valor' => '68',                          'etiqueta' => 'Miembros activos',       'destacada' => true],
     ['icono' => 'bi-calendar-check-fill', 'valor' => '23',                           'etiqueta' => 'Asistencias hoy',        'destacada' => false],

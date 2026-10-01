@@ -16,7 +16,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
 
 $permisos = [
-    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios'],
+    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios', 'facturacion', 'pagos'],
     'recepcionista' => ['dashboard', 'clientes'],
     'entrenador' => ['dashboard', 'clientes'],
 ];
@@ -72,9 +72,21 @@ $modulosPermitidos = $permisos[$rol] ?? [];
                 </a>
             <?php endif; ?>
 
+            <?php if (in_array('facturacion', $modulosPermitidos)): ?>
+                <a href="Principal.php?page=facturacion" class="btn-nav <?= $page == 'facturacion' ? 'active' : '' ?>">
+                    <i class="bi bi-receipt me-3 fs-5" style="color: #fff600;"></i> <span>Facturación</span>
+                </a>
+            <?php endif; ?>
+
             <?php if (in_array('reportes', $modulosPermitidos)): ?>
                 <a href="Principal.php?page=reportes" class="btn-nav <?= $page == 'reportes' ? 'active' : '' ?>">
                     <i class="bi bi-file-earmark-text me-3 fs-5" style="color: #fff600;"></i> <span>Reportes</span>
+                </a>
+            <?php endif; ?>
+
+            <?php if (in_array('pagos', $modulosPermitidos)): ?>
+                <a href="Principal.php?page=pagos" class="btn-nav <?= $page == 'pagos' ? 'active' : '' ?>">
+                    <i class="bi bi-file-earmark-text me-3 fs-5" style="color: #fff600;"></i> <span>Pagos</span>
                 </a>
             <?php endif; ?>
 
@@ -116,8 +128,6 @@ $modulosPermitidos = $permisos[$rol] ?? [];
 
     <div class="content-frame" id="contentFrame">
         <div id="transicion" class="revelando" aria-hidden="true">
-            <i class="fa-solid fa-dumbbell pesa pesa-izq"></i>
-            <i class="fa-solid fa-dumbbell pesa pesa-der"></i>
         </div>
 
         <div class="main-content" id="contenidoModulo">
@@ -146,9 +156,20 @@ $modulosPermitidos = $permisos[$rol] ?? [];
                         echo "<h2>Productos</h2>";
                         //require_once __DIR__ . '/../Controllers/ProductoController.php';
                         break;
+
+                    case 'facturacion':
+                        echo "<h2>Facturación</h2>";
+                        //require_once __DIR__ . '/../Controllers/FacturacionController.php';
+                        break;
+
                     case 'reportes':
                         echo "<h2>Reportes</h2>";
                         //require_once __DIR__ . '/../Controllers/ReporteController.php';
+                        break;
+
+                    case 'pagos':
+                        echo "<h2>Pagos</h2>";
+                        //require_once __DIR__ . '/../Controllers/PagoController.php';
                         break;
 
                     case 'usuarios':

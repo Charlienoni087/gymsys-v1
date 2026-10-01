@@ -1,0 +1,114 @@
+.notificacion-app {
+    position: fixed;
+
+    left: 50%;
+    bottom: 8%;
+
+    width: max-content;
+    min-width: 300px;
+    max-width: 500px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 18px;
+
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translate(-50%, -120px);
+
+    z-index: 9999;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+
+    transition:
+        transform 0.45s ease,
+        opacity 0.45s ease,
+        visibility 0.45s ease;
+}
+
+
+/* =========================
+   ENTRADA
+   ========================= */
+
+.notificacion-app.mostrar {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translate(-50%, 0);
+}
+
+
+/* =========================
+   SALIDA
+   ========================= */
+
+.notificacion-app.ocultar {
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translate(-50%, -120px);
+}
+
+
+/* =========================
+   TIPOS
+   ========================= */
+
+.notificacion-app.success {
+    background-color: #198754;
+}
+
+.notificacion-app.error {
+    background-color: #dc3545;
+}
+
+
+/* =========================
+   ICONO
+   ========================= */
+
+#notificacionIcono {
+    font-size: 1.25rem;
+}
+
+
+/* =========================
+   TEXTO
+   ========================= */
+
+#notificacionTexto {
+    flex: 1;
+}
+
+
+/* =========================
+   BOTÓN CERRAR
+   ========================= */
+
+.notificacion-cerrar {
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    padding: 0;
+    margin-left: 8px;
+
+    cursor: pointer;
+
+    font-size: 1.2rem;
+
+    line-height: 1;
+}
+
+.notificacion-cerrar:hover {
+    opacity: 0.7;
+}

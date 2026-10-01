@@ -5,3 +5,9 @@
     --gym-gris: #4a4a4a;
     --gym-gris-claro: #e5e5e5;
 }
+
+.formInput{
+    background-color: var(--gym-negro);
+    border: 2px solid var(--gym-amarillo-osc);
+    color: #ffffff;
+}
