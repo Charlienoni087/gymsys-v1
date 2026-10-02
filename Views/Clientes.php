@@ -51,7 +51,7 @@
       </div>
 
       <div class="col-12 col-sm-6 col-lg-3 d-grid">
-        <button class="btn  py-2" style="background-color:var(--gym-amarillo-osc);">
+        <button id="btnMembresia" class="btn  py-2" style="background-color:var(--gym-amarillo-osc);" data-bs-toggle="modal" data-bs-target="#tarjetaMembresia">
           <i class="bi bi-person fs-5"></i> Ver membresías
         </button>
       </div>
@@ -189,6 +189,60 @@
 
       </form>
 
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tarjetaMembresia" tabindex="-1" aria-labelledby="tarjetaMembresiaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+    <div class="modal-content ratio ratio-16x9 rounded-4 overflow-hidden shadow" style="border: 2px solid var(--gym-amarillo-osc);">
+      <div class="d-flex flex-column h-100 w-100">
+        <div class="modal-header py-2 px-4" style="background-color: var(--gym-amarillo-osc);">
+          <h5 class="modal-title fs-5 fw-bold" id="modalTarjetaMembresia" style="color: #ffffff;">
+            Tarjeta de Membresía
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body d-flex flex-column justify-content-between p-4" style="background-color: var(--gym-negro);">
+          <div class="row align-items-center g-3 my-auto">
+            <div class="col-auto text-center">
+              <div class="d-flex align-items-center justify-content-center rounded-3 bg-secondary bg-opacity-25" style="width: 110px; height: 125px; border: 2px dashed rgba(255, 255, 255, 0.3);">
+                <i class="bi bi-person-fill text-white-50" style="font-size: 4.5rem; line-height: 1;"></i>
+              </div>
+            </div>
+
+            <div class="col d-flex flex-column justify-content-between">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <span class="text-uppercase text-white-50 d-block small fw-bold">Tipo de Membresía</span>
+                  <span class="badge bg-warning text-dark fw-bold fs-6">Mensual</span>
+                </div>
+                <div class="text-end">
+                  <span class="text-uppercase text-white-50 d-block small fw-bold">Costo</span>
+                  <span class="fw-bold text-success fs-5">C$720 / mes</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-uppercase text-white-50 d-block small fw-bold">Socio</span>
+                <h3 class="fw-bold text-white m-0 text-truncate">Carlos Toledo</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-end border-top border-secondary pt-3">
+            <div>
+              <span class="text-uppercase text-white-50 d-block small fw-bold">Estado</span>
+              <span class="badge bg-success fs-6">Activo</span>
+            </div>
+            <div class="text-end">
+              <span class="text-uppercase text-white-50 d-block small fw-bold">Vence</span>
+              <span class="fw-bold text-white fs-5 font-monospace">01/11/2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
