@@ -154,7 +154,7 @@ $modulosPermitidos = $permisos[$rol] ?? [];
 
                     case 'productos':
                         echo "<h2>Productos</h2>";
-                        //require_once __DIR__ . '/../Controllers/ProductoController.php';
+                        require_once __DIR__ . '/../Controllers/ProductoController.php';
                         break;
 
                     case 'facturacion':
