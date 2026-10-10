@@ -1,5 +1,6 @@
 <?php 
 /** @var array $listaClientes */
+$en_modo_edicion = $en_modo_edicion ?? false;
 ?>
 
 ><head>
@@ -145,7 +146,7 @@
         </div>
 
         <div class="modal-body" style="background-color: var(--gym-negro);">
-          <input type="hidden" name="id_cliente" value="<?= htmlspecialchars($u_id) ?>">
+          <input type="hidden" name="id_cliente" value="<?= htmlspecialchars($u_id ?? '', ENT_QUOTES, 'UTF-8') ?>">
           <div class="mb-3">
             <label for="nombreInput" class="form-label">Nombre completo</label>
             <input type="text" class="form-control formInput" name="nombre_cliente" required value="<?= htmlspecialchars($u_nombre) ?>">
@@ -166,7 +167,7 @@
           </div>
           <div class="mb-3">
             <label for="fechaInput" class="form-label">Fecha</label>
-            <input type="date" class="form-control formInput" id="fechaInput" name="fecha_registro" required value="<?= htmlspecialchars($u_fecha_registro) ?>">
+            <input type="date" class="form-control formInput" id="fechaInput" name="fecha_registro" required value="<?= htmlspecialchars($u_fecha_registro ?? '', ENT_QUOTES, 'UTF-8') ?>">
           </div>
           <div class="mb-3">
             <label for="fechaInput" class="form-label">Estado</label>
@@ -223,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="../js/clientes.js"></script>
 <script src="../js/searchbar.js"></script>
 
-<?php if ($toast !== null): ?>
+<?php if (isset($toast) && $toast !== null): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   window.mostrarNotificacion(<?= json_encode($toast, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>);

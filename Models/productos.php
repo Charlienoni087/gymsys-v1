@@ -223,6 +223,86 @@ public function existeProducto(string $nombre_producto)
             return false;
         }
     }
+    
+    /* =====================================================
+       VERIFICAR SI UNA CATEGORÍA YA EXISTE
+    ===================================================== */
+    public function existeCategoria(string $nombre_categoria): bool
+    {
+        $sql = "SELECT id_categoria
+                FROM categorias
+                WHERE LOWER(nombre_categoria) = LOWER(?)";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("s", $nombre_categoria);
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+        $existe = $resultado->num_rows > 0;
+
+        $stmt->close();
+
+        return $existe;
+    }
+
+    /* =====================================================
+       AGREGAR NUEVA CATEGORÍA
+    ===================================================== */
+    public function crearCategoria(string $nombre_categoria): bool
+    {
+        $sql = "INSERT INTO categorias (nombre_categoria)
+                VALUES (?)";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("s", $nombre_categoria);
+
+        $resultado = $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
+    /* =====================================================
+       VERIFICAR SI UNA CATEGORÍA TIENE PRODUCTOS
+    ===================================================== */
+    public function categoriaTieneProductos(int $id_categoria): bool
+    {
+        $sql = "SELECT id_producto
+                FROM productos
+                WHERE id_categoria = ?
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id_categoria);
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+        $tieneProductos = $resultado->num_rows > 0;
+
+        $stmt->close();
+
+        return $tieneProductos;
+    }
+
+    /* =====================================================
+       ELIMINAR CATEGORÍA
+    ===================================================== */
+    public function eliminarCategoria(int $id_categoria): bool
+    {
+        $sql = "DELETE FROM categorias
+                WHERE id_categoria = ?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id_categoria);
+
+        $resultado = $stmt->execute();
+
+        $stmt->close();
+
+        return $resultado;
+    }
+
 }
 
 ?>
