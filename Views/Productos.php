@@ -73,6 +73,19 @@ unset($_SESSION['toast']);
             </button>
         </div>
     </div>
+    
+<!-- Botón para administrar categorías -->
+<div class="col-12 col-sm-6 col-lg-4 d-grid">
+    <button
+        type="button"
+        class="btn btn-gym py-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalCategorias">
+        <i class="bi bi-tags fs-5"></i>
+        Administrar categorías
+    </button>
+</div>
+
     <!-- título y buscador -->
     <div class="row mb-3 align-items-center">
         <div class="col-md-5">
@@ -295,6 +308,119 @@ unset($_SESSION['toast']);
         </div>
     </div>
 </div>
+
+<!-- =====================================================
+     MODAL PARA ADMINISTRAR CATEGORÍAS
+     ===================================================== -->
+
+<div class="modal fade" id="modalCategorias" tabindex="-1"
+     aria-labelledby="modalCategoriasLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"
+             style="background-color: var(--gym-negro); border: 1px solid var(--gym-amarillo-osc);">
+
+            <!-- ENCABEZADO -->
+            <div class="modal-header"
+                 style="background-color: var(--gym-amarillo-osc);">
+
+                <h5 class="modal-title" id="modalCategoriasLabel"
+                    style="color: #ffffff;">
+                    <i class="bi bi-tags"></i>
+                    Administrar categorías
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Cerrar">
+                </button>
+            </div>
+
+            <!-- CUERPO -->
+            <div class="modal-body">
+
+                <form method="POST" action="Principal.php?page=productos">
+
+                    <div class="mb-3">
+                        <label for="nombre_categoria" class="form-label">
+                            Nombre de la categoría
+                        </label>
+
+                        <input type="text"
+                               name="nombre_categoria"
+                               id="nombre_categoria"
+                               class="form-control"
+                               placeholder="Ejemplo: Proteínas"
+                               maxlength="100"
+                               required>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit"
+                                name="agregar_categoria"
+                                value="1"
+                                class="btn btn-gym">
+                            <i class="bi bi-plus-lg"></i>
+                            Agregar categoría
+                        </button>
+                    </div>
+
+                </form>
+
+                <hr style="border-color: var(--gym-amarillo-osc);">
+
+                <!-- LISTA DE CATEGORÍAS -->
+                <h6 class="text-white mb-3">Categorías registradas</h6>
+
+                <div class="list-group">
+                    <?php foreach ($listaCategorias as $categoria): ?>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+
+                            <span>
+                                <?= htmlspecialchars($categoria['nombre_categoria'], ENT_QUOTES, 'UTF-8') ?>
+                            </span>
+
+                            <form method="POST"
+                                  action="Principal.php?page=productos"
+                                  onsubmit="return confirm('¿Deseas eliminar esta categoría?');">
+
+                                <input type="hidden"
+                                       name="id_categoria_eliminar"
+                                       value="<?= (int) $categoria['id_categoria'] ?>">
+
+                                <button type="submit"
+                                        name="eliminar_categoria"
+                                        value="1"
+                                        class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </div>
+                    <?php endforeach; ?>
+
+                    <?php if (empty($listaCategorias)): ?>
+                        <div class="list-group-item text-muted">
+                            No hay categorías registradas.
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+
+            <!-- PIE DEL MODAL -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- contenedor para los mensajes -->
 
 <div id="notificacionApp" class="notificacion-app">

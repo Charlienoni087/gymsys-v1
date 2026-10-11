@@ -149,7 +149,7 @@ $modulosPermitidos = $permisos[$rol] ?? [];
                         break;
                     case 'membresias':
                         echo "<h2>Membresías</h2>";
-                        //require_once __DIR__ . '/../Controllers/MembresiaController.php';
+                        require_once __DIR__ . '/../Controllers/MembresiaController.php';
                         break;
 
                     case 'productos':

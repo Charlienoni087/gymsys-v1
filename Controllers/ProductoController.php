@@ -7,6 +7,94 @@ require_once __DIR__ . "/../Models/productos.php";
 $modeloProductos = new Productos($conexion);
 $toast = null;
 
+
+/* =====================================================
+   AGREGAR CATEGORÍA
+===================================================== */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_categoria'])) {
+
+    $nombre_categoria = trim($_POST['nombre_categoria'] ?? '');
+
+    if ($nombre_categoria !== '') {
+
+        if ($modeloProductos->existeCategoria($nombre_categoria)) {
+
+            $_SESSION['toast'] = [
+                'tipo' => 'error',
+                'mensaje' => '¡Esta categoría ya existe!'
+            ];
+
+        } else {
+
+            $resultado = $modeloProductos->crearCategoria($nombre_categoria);
+
+            if ($resultado) {
+                $_SESSION['toast'] = [
+                    'tipo' => 'success',
+                    'mensaje' => '¡Categoría agregada correctamente!'
+                ];
+            } else {
+                $_SESSION['toast'] = [
+                    'tipo' => 'error',
+                    'mensaje' => 'No se pudo agregar la categoría.'
+                ];
+            }
+        }
+
+    } else {
+        $_SESSION['toast'] = [
+            'tipo' => 'error',
+            'mensaje' => 'Escribe el nombre de la categoría.'
+        ];
+    }
+
+    header("Location: /GYMSYS/Views/Principal.php?page=productos");
+    exit();
+}
+
+/* ELIMINAR CATEGORÍA */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_categoria'])) {
+
+    $id_categoria = (int) ($_POST['id_categoria_eliminar'] ?? 0);
+
+    if ($id_categoria > 0) {
+
+        if ($modeloProductos->categoriaTieneProductos($id_categoria)) {
+
+            $_SESSION['toast'] = [
+                'tipo' => 'error',
+                'mensaje' => 'No puedes eliminar esta categoría porque tiene productos asociados.'
+            ];
+
+        } else {
+
+            $resultado = $modeloProductos->eliminarCategoria($id_categoria);
+
+            if ($resultado) {
+                $_SESSION['toast'] = [
+                    'tipo' => 'success',
+                    'mensaje' => '¡Categoría eliminada correctamente!'
+                ];
+            } else {
+                $_SESSION['toast'] = [
+                    'tipo' => 'error',
+                    'mensaje' => 'No se pudo eliminar la categoría.'
+                ];
+            }
+        }
+
+    } else {
+        $_SESSION['toast'] = [
+            'tipo' => 'error',
+            'mensaje' => 'La categoría seleccionada no es válida.'
+        ];
+    }
+
+    header("Location: /GYMSYS/Views/Principal.php?page=productos");
+    exit();
+}
+
+
 // Agregar prducto
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
