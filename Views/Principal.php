@@ -174,7 +174,7 @@ $modulosPermitidos = $permisos[$rol] ?? [];
 
                     case 'usuarios':
                         echo "<h2>Usuarios</h2>";
-                        //require_once __DIR__ . '/../Controllers/UsuarioController.php';
+                        require_once __DIR__ . '/../Controllers/UsuarioController.php';
                         break;
 
                     default:
