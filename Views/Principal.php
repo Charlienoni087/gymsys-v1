@@ -10,7 +10,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit;
 }
 
-//$nombreUsuario = $_SESSION['nombre_usuario'] ?? '';
+//$nombreUsuario = $_SESSION['nombre_usuario'] ?? 'Usuario';
 unset($_SESSION['login_exitoso']);
 $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
@@ -174,7 +174,7 @@ $modulosPermitidos = $permisos[$rol] ?? [];
 
                     case 'usuarios':
                         echo "<h2>Usuarios</h2>";
-                        //require_once __DIR__ . '/../Controllers/UsuarioController.php';
+                        require_once __DIR__ . '/../Controllers/UsuarioController.php';
                         break;
 
                     default:
