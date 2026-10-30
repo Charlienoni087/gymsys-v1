@@ -1,0 +1,252 @@
+    .reportes-container {
+        background-color: var(--gym-negro);
+        color: #ffffff;
+    }
+    .btn-gym {
+        background-color: var(--gym-amarillo-osc);
+        color: #000;
+        font-weight: 600;
+        border: none;
+    }
+    .btn-gym:hover:not(:disabled) {
+        background-color: #fff600;
+        color: #000;
+    }
+    .btn-gym:disabled {
+        opacity: 0.45;
+    }
+
+    /* Encabezado */
+    .rep-encabezado {
+        background: #161616;
+        border: 1px solid #333333;
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .rep-encabezado i {
+        font-size: 1.75rem;
+        color: var(--gym-amarillo-osc);
+    }
+
+    /* Tarjetas selectoras de reporte */
+    .rep-tarjeta {
+        width: 100%;
+        height: 100%;
+        text-align: left;
+        background: #161616;
+        border: 1px solid #4a4a4a;
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+        color: #e5e5e5;
+        transition: border-color .15s ease, background-color .15s ease;
+    }
+    .rep-tarjeta:hover {
+        border-color: #8a8a8a;
+    }
+    .rep-tarjeta:focus-visible {
+        outline: 2px solid var(--gym-amarillo-osc);
+        outline-offset: 2px;
+    }
+    .rep-tarjeta i {
+        font-size: 1.25rem;
+        display: block;
+        margin-bottom: .6rem;
+    }
+    .rep-tarjeta strong {
+        display: block;
+        color: #fff;
+        font-size: 1.05rem;
+    }
+    .rep-tarjeta span {
+        color: #a8a8a8;
+        font-size: .9rem;
+    }
+    .rep-tarjeta[aria-pressed="true"] {
+        border-color: var(--gym-amarillo-osc);
+        background: #1d1b0c;
+        cursor: default;
+    }
+    .rep-tarjeta[aria-pressed="true"] i {
+        color: var(--gym-amarillo-osc);
+    }
+
+    .modo-seleccion > .col-tarjeta {
+        width: 100%;
+    }
+
+    /* Paneles y filtros */
+    .rep-panel {
+        background: #161616;
+        border: 1px solid #333333;
+        border-radius: 10px;
+        padding: 1.25rem;
+    }
+    .rep-panel label {
+        color: #e5e5e5;
+        font-size: .9rem;
+        margin-bottom: .25rem;
+    }
+    .rep-panel .form-control,
+    .rep-panel .form-select {
+        background: var(--gym-negro);
+        border: 1px solid #4a4a4a;
+        color: #fff;
+    }
+    .rep-panel .form-control:focus,
+    .rep-panel .form-select:focus {
+        border-color: var(--gym-amarillo-osc);
+        box-shadow: 0 0 0 .2rem rgba(255, 214, 0, .2);
+    }
+    .rep-panel .form-control::placeholder {
+        color: #7d7d7d;
+    }
+    .rep-panel input[type="date"],
+    .rep-panel input[type="time"] {
+        color-scheme: dark;
+    }
+
+    /* Tablas de resultados */
+    .rep-resultado {
+        background: #e5e5e5;
+        color: #111;
+        border-radius: 10px;
+        padding: 1.25rem;
+    }
+    .rep-resultado h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    .rep-resultado .rep-meta {
+        color: #4a4a4a;
+        font-size: .85rem;
+    }
+    .rep-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .9rem;
+        background: #fff;
+    }
+    .rep-tabla th {
+        background: var(--gym-amarillo-osc);
+        color: #000;
+        font-weight: 600;
+        text-align: left;
+        padding: .55rem .7rem;
+        white-space: nowrap;
+    }
+    .rep-tabla td {
+        padding: .5rem .7rem;
+        border-bottom: 1px solid #cfcfcf;
+        color: #111;
+    }
+    .rep-tabla td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+    .rep-tabla tbody tr:nth-child(even) {
+        background: #f4f4f4;
+    }
+
+    /* Chips de estado */
+    .rep-chip {
+        display: inline-block;
+        padding: .1rem .55rem;
+        border-radius: 999px;
+        font-size: .78rem;
+        font-weight: 600;
+        border: 1px solid #111;
+        background: #fff;
+        color: #111;
+    }
+    .rep-chip.ok {
+        background: var(--gym-amarillo-osc);
+        border-color: var(--gym-amarillo-osc);
+        color: #000;
+    }
+    .rep-chip.alerta {
+        background: #111;
+        color: #fff;
+    }
+
+    /* Tabla de historial */
+    .tabla-historial thead th {
+        background-color: var(--gym-amarillo-osc);
+        color: #000;
+        font-weight: 600;
+    }
+
+    .rep-impresion-encabezado {
+        display: none;
+    }
+
+    /* Optimización de impresión */
+    @media print {
+        #sidebarMenu,
+        .navbar,
+        .no-imprimir,
+        .notificacion-app,
+        footer {
+            display: none !important;
+        }
+
+        body, .reportes-container {
+            background: #fff !important;
+            color: #000 !important;
+        }
+
+        .rep-impresion-encabezado {
+            display: block;
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            color: #000;
+        }
+        .rep-impresion-encabezado h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .rep-impresion-encabezado p {
+            margin: 2px 0;
+            font-size: 12px;
+        }
+
+        .rep-resultado {
+            background: #fff !important;
+            padding: 0;
+            border-radius: 0;
+        }
+        .rep-tabla {
+            font-size: 11px;
+        }
+        .rep-tabla th,
+        .rep-tabla td {
+            border: 1px solid #000 !important;
+            color: #000 !important;
+        }
+        .rep-tabla th {
+            background: #e5e5e5 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .rep-tabla tbody tr:nth-child(even) {
+            background: #fff !important;
+        }
+        .rep-chip {
+            background: #fff !important;
+            color: #000 !important;
+            border: 1px solid #000 !important;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+        thead {
+            display: table-header-group;
+        }
+        @page {
+            margin: 1.5cm;
+        }
+    }

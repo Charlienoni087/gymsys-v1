@@ -16,8 +16,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
 
 $permisos = [
-    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios', 'facturacion', 'pagos'],
-    'recepcionista' => ['dashboard', 'clientes'],
+    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios', 'facturacion', 'pagos', 'asistencias'],
+    'recepcionista' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'facturacion', 'pagos'],
     'entrenador' => ['dashboard', 'clientes'],
 ];
 
@@ -81,12 +81,6 @@ $modulosPermitidos = $permisos[$rol] ?? [];
             <?php if (in_array('reportes', $modulosPermitidos)): ?>
                 <a href="Principal.php?page=reportes" class="btn-nav <?= $page == 'reportes' ? 'active' : '' ?>">
                     <i class="bi bi-file-earmark-text me-3 fs-5" style="color: #fff600;"></i> <span>Reportes</span>
-                </a>
-            <?php endif; ?>
-
-            <?php if (in_array('pagos', $modulosPermitidos)): ?>
-                <a href="Principal.php?page=pagos" class="btn-nav <?= $page == 'pagos' ? 'active' : '' ?>">
-                    <i class="bi bi-file-earmark-text me-3 fs-5" style="color: #fff600;"></i> <span>Pagos</span>
                 </a>
             <?php endif; ?>
 
@@ -164,12 +158,12 @@ $modulosPermitidos = $permisos[$rol] ?? [];
 
                     case 'reportes':
                         echo "<h2>Reportes</h2>";
-                        //require_once __DIR__ . '/../Controllers/ReporteController.php';
+                        require_once __DIR__ . '/../Controllers/ReporteController.php';
                         break;
 
-                    case 'pagos':
-                        echo "<h2>Pagos</h2>";
-                        //require_once __DIR__ . '/../Controllers/PagoController.php';
+                    case 'asistencias':
+                        echo "<h2>Asistencias</h2>";
+                        //require_once __DIR__ . '/../Controllers/AsistenciasController.php';
                         break;
 
                     case 'usuarios':

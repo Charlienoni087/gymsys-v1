@@ -10,6 +10,7 @@ const statusIcon = document.getElementById('statusIcon');
 const statusTitle = document.getElementById('statusTitle');
 const statusMessage = document.getElementById('statusMessage');
 
+// Mostrar / ocultar contraseña
 toggle.addEventListener('click', () => {
     const oculto = password.type === 'password';
 
@@ -27,6 +28,7 @@ toggle.addEventListener('click', () => {
     password.focus();
 });
 
+// Validación de inputs
 function validar(input) {
     const valido = input.checkValidity();
     const campo = input.closest('.campo');
@@ -50,6 +52,7 @@ form.querySelectorAll('input[required]').forEach(input => {
     });
 });
 
+// Control de estados en el Modal
 function mostrarModal() {
     modal.classList.remove('error', 'exito');
 
@@ -62,20 +65,20 @@ function mostrarModal() {
     modal.setAttribute('aria-hidden', 'false');
 }
 
-function mostrarExito() {
+function mostrarExito(mensaje = 'Credenciales verificadas correctamente.') {
     statusIcon.className = 'status-icon success';
 
     statusTitle.textContent = '¡Bienvenido a GYMSYS!';
-    statusMessage.textContent = 'Credenciales verificadas correctamente.';
+    statusMessage.textContent = mensaje;
 
     modal.classList.add('exito');
 }
 
-function mostrarError() {
+function mostrarError(mensaje = 'El correo o la contraseña no son válidos.', titulo = 'Credenciales incorrectas') {
     statusIcon.className = 'status-icon error';
 
-    statusTitle.textContent = 'Credenciales incorrectas';
-    statusMessage.textContent = 'El correo o la contraseña no son válidos.';
+    statusTitle.textContent = titulo;
+    statusMessage.textContent = mensaje;
 
     modal.classList.add('error');
 }
@@ -85,6 +88,7 @@ function cerrarModal() {
     modal.setAttribute('aria-hidden', 'true');
 }
 
+// Envío del formulario
 form.addEventListener('submit', async e => {
     e.preventDefault();
 
@@ -120,46 +124,69 @@ form.addEventListener('submit', async e => {
         });
 
         const resultado = await respuesta.json();
+
+        // 1 segundo exacto (1000ms) de espera mínima para que no sea molesto
         const tiempoTranscurrido = Date.now() - inicioValidacion;
-        const tiempoRestante = Math.max(0, 1800 - tiempoTranscurrido);
+        const tiempoRestante = Math.max(0, 1000 - tiempoTranscurrido);
 
         if (tiempoRestante > 0) {
             await new Promise(resolve => setTimeout(resolve, tiempoRestante));
         }
 
         if (resultado.success) {
-            mostrarExito();
+            mostrarExito(resultado.message);
 
+            // Redirección rápida tras éxito
             setTimeout(() => {
                 window.location.href = resultado.redirect;
-            }, 1800);
+            }, 1000);
         } else {
-            mostrarError();
+            const tituloModal = resultado.bloqueado ? 'Acceso bloqueado' : 'Credenciales incorrectas';
+            const mensajeModal = resultado.message || 'El correo o la contraseña no son válidos.';
+
+            mostrarError(mensajeModal, tituloModal);
+
+            // Si está bloqueado se deja 2.5s para que lea bien el tiempo; si solo falló la clave, se quita en 1.2s
+            const duracionEspera = resultado.bloqueado ? 3000 : 1200;
 
             setTimeout(() => {
                 cerrarModal();
-                btn.disabled = false;
-                btn.textContent = 'Entrar';
-            }, 1800);
+
+                if (typeof window.mostrarNotificacion === 'function') {
+                    window.mostrarNotificacion({
+                        tipo: 'error',
+                        mensaje: mensajeModal
+                    });
+                }
+
+                if (resultado.bloqueado) {
+                    btn.disabled = true;
+                    btn.textContent = 'Bloqueado';
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                }
+            }, duracionEspera);
         }
     } catch (error) {
-        statusIcon.className = 'status-icon error';
-
-        statusTitle.textContent = 'Error de conexión';
-        statusMessage.textContent = 'No fue posible comunicarse con el servidor.';
-
-        modal.classList.add('error');
+        mostrarError('No fue posible comunicarse con el servidor.', 'Error de conexión');
 
         setTimeout(() => {
             cerrarModal();
             btn.disabled = false;
             btn.textContent = 'Entrar';
-        }, 1800);
-    }
 
-    
+            if (typeof window.mostrarNotificacion === 'function') {
+                window.mostrarNotificacion({
+                    tipo: 'error',
+                    mensaje: 'Error de conexión con el servidor.'
+                });
+            }
+        }, 1200);
+    }
 });
 
+// Reactivar botón al regresar con el historial del navegador
 window.addEventListener('pageshow', () => {
     btn.disabled = false;
     btn.textContent = 'Entrar';

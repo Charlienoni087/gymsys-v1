@@ -3,20 +3,16 @@
 class Usuario {
 
     private mysqli $db;
-    public int $id;
-    public string $nombre_usuario;
-    public string $correo;
-    public string $contrasena;
-    public string $rol;
 
     public function __construct(mysqli $conexion) {
         $this->db = $conexion;
     }
 
-
-
     public function obtenerPorCorreo(string $correo): ?array {
-        $sql = "SELECT id_usuario, nombre, correo, pass, rol FROM usuarios WHERE correo = ?";
+        $sql = "SELECT id_usuario, nombre, correo, pass, rol, intentos_fallidos, bloqueado_hasta 
+                FROM usuarios 
+                WHERE correo = ? 
+                LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("s", $correo);
         $stmt->execute();
@@ -27,6 +23,34 @@ class Usuario {
         }
         
         return null;
+    }
+
+    public function registrarFallo(int $id_usuario, int $intentosActuales): array {
+        $nuevosIntentos = $intentosActuales + 1;
+        $bloqueado = false;
+        $bloqueo = null;
+
+        if ($nuevosIntentos >= 5) {
+            $bloqueado = true;
+            $bloqueo = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+        }
+
+        $sql = "UPDATE usuarios SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id_usuario = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("isi", $nuevosIntentos, $bloqueo, $id_usuario);
+        $stmt->execute();
+
+        return [
+            'nuevosIntentos' => $nuevosIntentos,
+            'bloqueado'      => $bloqueado
+        ];
+    }
+
+    public function resetearBloqueo(int $id_usuario): bool {
+        $sql = "UPDATE usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id_usuario);
+        return $stmt->execute();
     }
 
     public function actualizarContrasena(int $id, string $nuevoHash) {
@@ -86,5 +110,3 @@ class Usuario {
         return $stmt->get_result()->num_rows > 0;
     }
 }
-
-?>
