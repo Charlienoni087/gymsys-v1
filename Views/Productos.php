@@ -156,6 +156,19 @@ unset($_SESSION['toast']);
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="alert mt-2 mb-0 py-1 px-2"
+     role="alert"
+     style="background-color: #8B1E1E;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;">
+
+    <i class="bi bi-info-circle me-1"></i>
+    <strong>¿No encuentras tu categoría?</strong>
+    Créala desde <strong>Administrar categorías</strong>
+    o selecciónala de la lista.
+</div>
                     </div>
                     <!-- precio -->
                     <div class="mb-3">
@@ -309,9 +322,7 @@ unset($_SESSION['toast']);
     </div>
 </div>
 
-<!-- =====================================================
-     MODAL PARA ADMINISTRAR CATEGORÍAS
-     ===================================================== -->
+<!--  MODAL PARA ADMINISTRAR CATEGORÍAS -->
 
 <div class="modal fade" id="modalCategorias" tabindex="-1"
      aria-labelledby="modalCategoriasLabel" aria-hidden="true">
