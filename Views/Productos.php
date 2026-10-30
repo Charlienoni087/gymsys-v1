@@ -156,7 +156,8 @@ unset($_SESSION['toast']);
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <div class="alert mt-2 mb-0 py-1 px-2"
+                        <div id="avisoCategoria"
+     class="alert mt-2 mb-0 py-1 px-2"
      role="alert"
      style="background-color: #8B1E1E;
             color: white;
@@ -464,5 +465,46 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const modal = document.getElementById('modalAgregarProducto');
+    const aviso = document.getElementById('avisoCategoria');
+
+    let temporizador;
+
+    if (modal && aviso) {
+
+        // Cada vez que se abre el modal
+        modal.addEventListener('shown.bs.modal', function () {
+
+            clearTimeout(temporizador);
+
+            // Mostrar nuevamente el aviso
+            aviso.style.display = 'block';
+            aviso.style.opacity = '1';
+            aviso.style.transition = 'none';
+
+            // Ocultar después de 4 segundos
+            temporizador = setTimeout(function () {
+
+                aviso.style.transition = 'opacity 0.5s ease';
+                aviso.style.opacity = '0';
+
+                setTimeout(function () {
+                    aviso.style.display = 'none';
+                }, 500);
+
+            }, 4000);
+        });
+
+        // Limpiar temporizador al cerrar el modal
+        modal.addEventListener('hidden.bs.modal', function () {
+            clearTimeout(temporizador);
+        });
+    }
+});
+</script>
 
 </body>
