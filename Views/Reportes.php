@@ -93,9 +93,7 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
             bottom: auto;
             transform: translate(-50%, -50%);
         }
-        .notificacion-app.mostrar {
-            transform: translate(-50%, -50%);
-        }
+        .notificacion-app.mostrar,
         .notificacion-app.ocultar {
             transform: translate(-50%, -50%);
         }
@@ -180,90 +178,101 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
         $usaFechas = in_array($tipoGenerado, ['membresias', 'clientes', 'asistencia'], true);
         ?>
 
-        <!-- Encabezado para impresión física/PDF -->
-        <div class="rep-impresion-encabezado">
-            <h2><?= rep_e($info['nombre_negocio'] ?? 'GYMSYS') ?></h2>
-            <p>
-                <?= rep_e($info['direccion'] ?? '') ?>
-                <?= !empty($info['telefono']) ? ' · Tel: ' . rep_e($info['telefono']) : '' ?>
-                <?= !empty($info['correo']) ? ' · ' . rep_e($info['correo']) : '' ?>
-            </p>
-            <p><strong>Reporte de <?= rep_e(mb_strtolower($titulo)) ?></strong></p>
-            <p>
-                Generado el <?= date('d/m/Y H:i') ?> por <?= rep_e($_SESSION['nombre'] ?? 'usuario') ?>
-                <?php if ($usaFechas && ($filtros['rango_inicio'] !== '' || $filtros['rango_fin'] !== '')): ?>
-                    · Del <?= rep_fecha($filtros['rango_inicio'] ?: null) ?> al <?= rep_fecha($filtros['rango_fin'] ?: null) ?>
-                <?php endif; ?>
-                <?php if (($filtros['estado'] ?? '') !== ''): ?>
-                    · Estado: <?= rep_e($filtros['estado']) ?>
-                <?php endif; ?>
-            </p>
-        </div>
+        <!-- Área que se imprime -->
+        <div id="areaImpresion">
 
-        <section id="zonaResultado" class="rep-resultado mb-4" aria-label="Resultado del reporte">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 no-imprimir">
-                <div>
-                    <h3>Reporte de <?= rep_e(mb_strtolower($titulo)) ?></h3>
-                    <div class="rep-meta"><?= $total ?> <?= $total === 1 ? 'registro' : 'registros' ?></div>
-                </div>
-                <?php if ($total > 0): ?>
-                    <button type="button" class="btn btn-dark" onclick="window.print()">
-                        <i class="bi bi-printer"></i> Imprimir reporte
-                    </button>
-                <?php endif; ?>
+            <!-- Encabezado para impresión física/PDF -->
+            <div class="rep-impresion-encabezado">
+                <h2><?= rep_e($info['nombre_negocio'] ?? 'GYMSYS') ?></h2>
+                <p>
+                    <?= rep_e($info['direccion'] ?? '') ?>
+                    <?= !empty($info['telefono']) ? ' · Tel: ' . rep_e($info['telefono']) : '' ?>
+                    <?= !empty($info['correo']) ? ' · ' . rep_e($info['correo']) : '' ?>
+                </p>
+                <p><strong>Reporte de <?= rep_e(mb_strtolower($titulo)) ?></strong></p>
+                <p>
+                    Generado el <?= date('d/m/Y H:i') ?> por <?= rep_e($_SESSION['nombre'] ?? 'usuario') ?>
+                    <?php if ($usaFechas && ($filtros['rango_inicio'] !== '' || $filtros['rango_fin'] !== '')): ?>
+                        · Del <?= rep_fecha($filtros['rango_inicio'] ?: null) ?> al <?= rep_fecha($filtros['rango_fin'] ?: null) ?>
+                    <?php endif; ?>
+                    <?php if (($filtros['estado'] ?? '') !== ''): ?>
+                        · Estado: <?= rep_e($filtros['estado']) ?>
+                    <?php endif; ?>
+                </p>
             </div>
 
-            <?php if ($total === 0): ?>
-                <p class="mb-0">No hay registros con los filtros elegidos. Prueba con otro rango de fechas o quita el estado.</p>
-            <?php else: ?>
-                <div class="table-responsive shadow-sm rounded">
-                    <table class="rep-tabla">
-                        <thead>
-                            <tr>
-                                <?php foreach (array_keys($resultadosReporte[0]) as $col): ?>
-                                    <th><?= rep_e($etiquetasColumnas[$col] ?? $col) ?></th>
-                                <?php endforeach; ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($resultadosReporte as $fila): ?>
+            <section id="zonaResultado" class="rep-resultado mb-4" aria-label="Resultado del reporte">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 no-imprimir">
+                    <div>
+                        <h3>Reporte de <?= rep_e(mb_strtolower($titulo)) ?></h3>
+                        <div class="rep-meta"><?= $total ?> <?= $total === 1 ? 'registro' : 'registros' ?></div>
+                    </div>
+                    <?php if ($total > 0): ?>
+                        <button type="button" class="btn btn-dark" onclick="window.print()">
+                            <i class="bi bi-printer"></i> Imprimir reporte
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($total === 0): ?>
+                    <p class="mb-0">No hay registros con los filtros elegidos. Prueba con otro rango de fechas o quita el estado.</p>
+                <?php else: ?>
+                    <div class="table-responsive shadow-sm rounded">
+                        <table class="rep-tabla">
+                            <thead>
                                 <tr>
-                                    <?php foreach ($fila as $col => $valor): ?>
-                                        <?php if (in_array($col, $columnasDinero, true)): ?>
-                                            <td class="num">C$ <?= number_format((float) $valor, 2) ?></td>
-
-                                        <?php elseif (in_array($col, $columnasFecha, true)): ?>
-                                            <td><?= rep_fecha($valor) ?></td>
-
-                                        <?php elseif ($col === 'estado'): ?>
-                                            <?php $ok = in_array($valor, ['Vigente', 'activo'], true); ?>
-                                            <td><span class="rep-chip <?= $ok ? 'ok' : 'alerta' ?>"><?= rep_e($valor) ?></span></td>
-
-                                        <?php elseif ($col === 'stock_disponible'): ?>
-                                            <td class="num">
-                                                <?= (int) $valor ?>
-                                                <?php if ((int) $valor <= 5): ?>
-                                                    <span class="rep-chip alerta ms-1">Bajo</span>
-                                                <?php endif; ?>
-                                            </td>
-
-                                        <?php elseif ($col === 'hora_salida'): ?>
-                                            <td><?= $valor ? rep_e(substr($valor, 0, 5)) : '—' ?></td>
-
-                                        <?php elseif ($col === 'hora_entrada'): ?>
-                                            <td><?= rep_e(substr((string) $valor, 0, 5)) ?></td>
-
-                                        <?php else: ?>
-                                            <td><?= ($valor === null || $valor === '') ? '—' : rep_e($valor) ?></td>
-                                        <?php endif; ?>
+                                    <?php foreach (array_keys($resultadosReporte[0]) as $col): ?>
+                                        <th><?= rep_e($etiquetasColumnas[$col] ?? $col) ?></th>
                                     <?php endforeach; ?>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </section>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($resultadosReporte as $fila): ?>
+                                    <tr>
+                                        <?php foreach ($fila as $col => $valor): ?>
+                                            <?php if (in_array($col, $columnasDinero, true)): ?>
+                                                <td class="num">C$ <?= number_format((float) $valor, 2) ?></td>
+
+                                            <?php elseif (in_array($col, $columnasFecha, true)): ?>
+                                                <td><?= rep_fecha($valor) ?></td>
+
+                                            <?php elseif ($col === 'estado'): ?>
+                                                <?php $ok = in_array($valor, ['Vigente', 'activo'], true); ?>
+                                                <td><span class="rep-chip <?= $ok ? 'ok' : 'alerta' ?>"><?= rep_e($valor) ?></span></td>
+
+                                            <?php elseif ($col === 'stock_disponible'): ?>
+                                                <td class="num">
+                                                    <?= (int) $valor ?>
+                                                    <?php if ((int) $valor <= 5): ?>
+                                                        <span class="rep-chip alerta ms-1">Bajo</span>
+                                                    <?php endif; ?>
+                                                </td>
+
+                                            <?php elseif ($col === 'hora_salida'): ?>
+                                                <td><?= $valor ? rep_e(substr($valor, 0, 5)) : '—' ?></td>
+
+                                            <?php elseif ($col === 'hora_entrada'): ?>
+                                                <td><?= rep_e(substr((string) $valor, 0, 5)) ?></td>
+
+                                            <?php else: ?>
+                                                <td><?= ($valor === null || $valor === '') ? '—' : rep_e($valor) ?></td>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </section>
+
+            <!-- Pie solo para impresión -->
+            <div class="rep-impresion-pie">
+                Total: <?= $total ?> <?= $total === 1 ? 'registro' : 'registros' ?>
+            </div>
+
+        </div>
+        <!-- /areaImpresion -->
     <?php endif; ?>
 
     <!-- Historial de reportes -->
@@ -357,6 +366,7 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
     const panelFiltros    = document.getElementById('panelFiltros');
     const panelAsistencia = document.getElementById('panelAsistencia');
     const zonaResultado   = document.getElementById('zonaResultado');
+    const areaImpresion   = document.getElementById('areaImpresion');
     const btnGenerar      = document.getElementById('btnGenerar');
     const ayuda           = document.getElementById('ayudaFiltros');
     const selEstado       = document.getElementById('estadoReporte');
@@ -386,6 +396,10 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
             ayuda: 'Para ver el reporte de asistencia, elige un rango de fechas (opcional) y genéralo.'
         }
     };
+
+    function ocultarResultado() {
+        if (areaImpresion) areaImpresion.classList.add('d-none');
+    }
 
     function mostrarTodos() {
         inputTipo.value = '';
@@ -439,10 +453,32 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
             bloqueEstado.classList.add('d-none');
         }
 
-        if (!inicial && zonaResultado) {
-            zonaResultado.classList.add('d-none');
-        }
+        if (!inicial) ocultarResultado();
     }
+
+        // Copia limpia del reporte para imprimir (independiente del layout)
+    function limpiarImpresion() {
+        const r = document.getElementById('printRoot');
+        if (r) r.remove();
+    }
+
+    function prepararImpresion() {
+        const origen = document.getElementById('areaImpresion');
+        if (!origen || origen.classList.contains('d-none')) return;
+
+        limpiarImpresion();
+        const copia = origen.cloneNode(true);
+        copia.removeAttribute('id');
+        copia.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+
+        const raiz = document.createElement('div');
+        raiz.id = 'printRoot';
+        raiz.appendChild(copia);
+        document.body.appendChild(raiz);
+    }
+
+    window.addEventListener('beforeprint', prepararImpresion);
+    window.addEventListener('afterprint', limpiarImpresion);
 
     tarjetas.forEach(t => t.addEventListener('click', () => {
         if (t.getAttribute('aria-pressed') === 'true') return;
@@ -451,7 +487,7 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
 
     btnVolver.addEventListener('click', () => {
         mostrarTodos();
-        if (zonaResultado) zonaResultado.classList.add('d-none');
+        ocultarResultado();
     });
 
     aplicarTipo(inputTipo.value, true);

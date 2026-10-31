@@ -16,8 +16,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
 
 $permisos = [
-    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios', 'facturacion', 'pagos', 'asistencias'],
-    'recepcionista' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'facturacion', 'pagos'],
+    'administrador' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'usuarios', 'facturacion', 'pagos', 'asistencias', 'backup'],
+    'recepcionista' => ['dashboard', 'clientes', 'membresias', 'productos', 'reportes', 'facturacion', 'pagos', 'backup'],
     'entrenador' => ['dashboard', 'clientes'],
 ];
 
@@ -87,6 +87,12 @@ $modulosPermitidos = $permisos[$rol] ?? [];
             <?php if (in_array('usuarios', $modulosPermitidos)): ?>
                 <a href="Principal.php?page=usuarios" class="btn-nav <?= $page == 'usuarios' ? 'active' : '' ?>">
                     <i class="bi bi-people me-3 fs-5" style="color: #fff600;"></i> <span>Usuarios</span>
+                </a>
+            <?php endif; ?>
+
+            <?php if (in_array('backup', $modulosPermitidos)): ?>
+                <a href="../Controllers/BackupController.php?action=export" class="btn-nav">
+                    <i class="bi bi-database me-3 fs-5" style="color: #fff600;"></i> <span>Descargar respaldo</span>
                 </a>
             <?php endif; ?>
 
@@ -169,6 +175,11 @@ $modulosPermitidos = $permisos[$rol] ?? [];
                     case 'usuarios':
                         echo "<h2>Usuarios</h2>";
                         require_once __DIR__ . '/../Controllers/UsuarioController.php';
+                        break;
+
+                    case 'backup':
+                        echo "<h2>Backup</h2>";
+                        require_once __DIR__ . '/../Controllers/BackupController.php';
                         break;
 
                     default:
