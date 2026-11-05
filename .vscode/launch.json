@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GYMSYS - Abrir en Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost/GYMSYS/index.php",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "GYMSYS - Abrir en Edge",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost/GYMSYS/index.php",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "GYMSYS - Depurar PHP (Xdebug)",
+      "type": "php",
+      "request": "launch",
+      "port": 9003
+    }
+  ]
+}

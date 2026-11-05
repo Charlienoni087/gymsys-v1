@@ -1,45 +1,398 @@
-    .dash-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-    .dash-head h2 { margin: 0; }
-    .dash-head p { margin: .25rem 0 0; color: var(--gym-gris); }
+/* ==========================================================================
+   GYMSYS DASHBOARD STYLES (ADAPTIVE THEMES: DARK & BLUE + LIGHT)
+   ========================================================================== */
 
-    .stat-card { display: flex; align-items: center; gap: 1rem; height: 100%; padding: 1.25rem; border: 1px solid var(--gym-gris-claro); border-radius: 14px; background: var(--gym-negro); color: var(--gym-gris-claro); }
-    .stat-icon { display: grid; place-items: center; flex: 0 0 auto; width: 50px; height: 50px; border-radius: 50%; background: var(--gym-negro); color: var(--gym-amarillo); font-size: 1.4rem; }
-    .stat-value { font-size: 1.8rem; font-weight: 800; line-height: 1.1; }
-    .stat-label { color: var(--gym-gris); font-size: .9rem; }
+/* Dashboard Header */
+.dash-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 1.75rem;
+    background-color: var(--gym-card-bg);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    box-shadow: var(--gym-shadow-card);
+    transition: var(--gym-transition);
+}
 
-    .stat-card.destacada { background: var(--gym-negro); color: var(--gym-gris-claro); }
-    .stat-card.destacada .stat-icon { background: var(--gym-amarillo); color: var(--gym-negro); }
-    .stat-card.destacada .stat-value { color: var(--gym-amarillo); }
-    .stat-card.destacada .stat-label { color: var(--gym-gris-claro); opacity: .75; }
+.dash-greeting-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--gym-text-main);
+    margin: 0 0 0.35rem;
+    letter-spacing: -0.01em;
+}
 
-    .dash-panel { height: 100%; padding: 1.25rem; border: 1px solid var(--gym-gris-claro); border-radius: 14px; }
-    .dash-panel-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-    .dash-panel-title h3 { margin: 0; font-size: 1.1rem; font-weight: 700; }
-    .dash-panel-title a { color: var(--gym-gris); font-size: .9rem; font-weight: 500; }
-    .dash-panel-title a:hover { color: var(--gym-negro); }
+.dash-greeting-sub {
+    font-size: 0.925rem;
+    color: var(--gym-text-muted);
+    margin: 0;
+}
 
-    .bars { display: flex; align-items: flex-end; gap: .75rem; }
-    .bar-col { display: flex; flex: 1; flex-direction: column; align-items: center; }
-    .bar-val { margin-bottom: .35rem; font-size: .85rem; font-weight: 600; }
-    .bar-track { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 170px; }
-    .bar { width: 62%; min-height: 4px; border-radius: 8px 8px 0 0; background: var(--gym-gris); }
-    .bar.pico { background: var(--gym-amarillo); }
-    .bar-day { margin-top: .5rem; color: var(--gym-gris); font-size: .85rem; }
+.dash-btn-nuevo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--gym-primary-start) 0%, var(--gym-primary-end) 100%);
+    border: 1px solid var(--gym-primary-glow);
+    color: #FFFFFF !important;
+    font-weight: 600;
+    padding: 0.7rem 1.35rem;
+    border-radius: var(--gym-radius-md, 10px);
+    text-decoration: none;
+    transition: var(--gym-transition);
+    box-shadow: 0 4px 14px var(--gym-primary-glow);
+}
 
-    .dash-table-wrap { overflow: hidden; border-radius: 12px; border: 1px solid var(--gym-gris-claro); }
-    .dash-table { margin: 0; }
-    .dash-table thead th { padding: .75rem 1rem; border: 0; background: var(--gym-negro); color: var(--gym-gris-claro); font-weight: 600; }
-    .dash-table tbody td { padding: .75rem 1rem; border-color: var(--gym-gris-claro); }
-    .dash-table tbody tr:hover td { background: #f7f7f7; }
+.dash-btn-nuevo:hover {
+    background: linear-gradient(135deg, var(--gym-primary-hover) 0%, var(--gym-primary-end) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px var(--gym-primary-glow);
+    color: #FFFFFF;
+}
 
-    .estado { display: inline-block; padding: .25rem .7rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
-    .estado-activo    { background: var(--gym-amarillo); color: var(--gym-negro); }
-    .estado-porvencer { background: var(--gym-gris);     color: #fff; }
-    .estado-vencido   { background: var(--gym-negro);    color: var(--gym-gris-claro); }
+/* ==========================================================================
+   STAT CARDS (KPIs)
+   ========================================================================== */
+.stat-card {
+    height: 100%;
+    padding: 1.6rem;
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    background-color: var(--gym-card-bg);
+    color: var(--gym-text-main);
+    box-shadow: var(--gym-shadow-card);
+    transition: var(--gym-transition);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-    .venc-item { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem 0; border-bottom: 1px solid var(--gym-gris-claro); }
-    .venc-item:last-child { border-bottom: 0; padding-bottom: 0; }
-    .venc-nombre { font-weight: 600; }
-    .venc-plan { color: var(--gym-gris); font-size: .85rem; }
-    .venc-dias { flex: 0 0 auto; padding: .25rem .65rem; border-radius: 8px; background: var(--gym-gris-claro); font-size: .85rem; font-weight: 700; }
-    .venc-dias.urgente { background: var(--gym-amarillo); color: var(--gym-negro); }
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--gym-shadow-md);
+    border-color: var(--gym-primary);
+}
+
+.stat-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: var(--gym-surface-elevated);
+    border: 1px solid var(--gym-border);
+    color: var(--gym-primary);
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: var(--gym-transition);
+}
+
+.stat-icon i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.stat-card:hover .stat-icon {
+    background-color: var(--gym-primary);
+    color: #FFFFFF;
+    border-color: var(--gym-primary);
+    box-shadow: 0 0 14px var(--gym-primary-glow);
+}
+
+.stat-trend-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    background-color: var(--gym-surface-elevated);
+    color: var(--gym-primary);
+    border: 1px solid var(--gym-border);
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--gym-text-main);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.stat-label {
+    color: var(--gym-text-muted);
+    font-size: 0.885rem;
+    font-weight: 500;
+}
+
+/* Featured Stat Card */
+.stat-card.destacada {
+    background: linear-gradient(145deg, #12161F 0%, #172A45 100%);
+    border-color: #2B5B9E;
+    box-shadow: 0 8px 28px rgba(0, 136, 255, 0.25);
+}
+
+[data-theme="light"] .stat-card.destacada {
+    background: linear-gradient(145deg, #EFF6FF 0%, #DBEAFE 100%);
+    border-color: #93C5FD;
+    box-shadow: 0 8px 25px rgba(0, 102, 255, 0.12);
+}
+
+.stat-card.destacada .stat-value {
+    color: var(--gym-text-main);
+}
+
+.stat-card.destacada .stat-label {
+    color: var(--gym-text-muted);
+}
+
+.stat-card.destacada .stat-icon {
+    background-color: rgba(0, 102, 255, 0.15);
+    color: var(--gym-primary);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    box-shadow: 0 0 16px rgba(0, 102, 255, 0.2);
+}
+
+.stat-card.destacada .stat-trend-badge {
+    background-color: rgba(0, 102, 255, 0.15);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: var(--gym-primary);
+}
+
+/* ==========================================================================
+   DASH PANELS (CHART & EXPIRATIONS)
+   ========================================================================== */
+.dash-panel {
+    height: 100%;
+    padding: 1.75rem;
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    background-color: var(--gym-card-bg);
+    box-shadow: var(--gym-shadow-card);
+    color: var(--gym-text-main);
+    transition: var(--gym-transition);
+}
+
+.dash-panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--gym-border);
+}
+
+.dash-panel-title h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gym-text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dash-panel-title h3 i {
+    color: var(--gym-primary);
+}
+
+.dash-panel-title a {
+    color: var(--gym-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.dash-panel-title a:hover {
+    color: var(--gym-primary-hover);
+    text-decoration: underline;
+}
+
+/* Weekly Attendance Chart Bars */
+.bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    height: 200px;
+    padding: 1rem 0 0.5rem;
+    border-bottom: 1px solid var(--gym-border);
+}
+
+.bar-col {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.bar-val {
+    font-size: 0.775rem;
+    font-weight: 700;
+    color: var(--gym-text-main);
+    margin-bottom: 0.45rem;
+}
+
+.bar-track {
+    width: 100%;
+    max-width: 32px;
+    height: 140px;
+    background-color: var(--gym-surface-elevated);
+    border-radius: 8px 8px 4px 4px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--gym-border);
+}
+
+.bar {
+    width: 100%;
+    background: linear-gradient(180deg, var(--gym-primary-start) 0%, var(--gym-primary-end) 100%);
+    border-radius: 6px 6px 0 0;
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar.pico {
+    background: linear-gradient(180deg, #3B82F6 0%, var(--gym-primary-start) 100%);
+    box-shadow: 0 0 12px var(--gym-primary-glow);
+}
+
+.bar-day {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gym-text-muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Expirations List */
+.venc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.venc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background-color: var(--gym-surface-elevated);
+    border: 1px solid var(--gym-border);
+    transition: var(--gym-transition);
+}
+
+.venc-item:hover {
+    border-color: var(--gym-primary);
+    transform: translateX(2px);
+}
+
+.venc-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.venc-nombre {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gym-text-main);
+}
+
+.venc-plan {
+    font-size: 0.75rem;
+    color: var(--gym-text-muted);
+}
+
+.venc-dias {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--gym-primary);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.venc-dias.urgente {
+    background-color: var(--gym-danger-bg);
+    color: var(--gym-danger);
+    border-color: var(--gym-danger-border);
+}
+
+/* Tables in Dashboard */
+.dash-table-wrap {
+    background: transparent;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--gym-border);
+}
+
+.dash-table {
+    margin-bottom: 0;
+}
+
+.dash-table thead th {
+    background-color: var(--gym-surface-elevated) !important;
+    color: var(--gym-text-main) !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--gym-border);
+}
+
+.dash-table tbody td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--gym-border);
+    color: var(--gym-text-main);
+}
+
+/* Status Badges */
+.estado {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.estado-activo {
+    background-color: var(--gym-success-bg);
+    color: var(--gym-success);
+    border: 1px solid var(--gym-success-border);
+}
+
+.estado-porvencer {
+    background-color: var(--gym-warning-bg);
+    color: var(--gym-warning);
+    border: 1px solid var(--gym-warning-border);
+}
+
+.estado-vencido {
+    background-color: var(--gym-danger-bg);
+    color: var(--gym-danger);
+    border: 1px solid var(--gym-danger-border);
+}

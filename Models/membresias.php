@@ -1,12 +1,9 @@
 
 <?php
-
 /* MODELO DE MEMBRESÍAS
    Archivo: Models/membresias.php */
 
 class Membresias {
-
-    /* CONEXIÓN A LA BASE DE DATOS*/
 
     private mysqli $db;
 
@@ -14,21 +11,21 @@ class Membresias {
         $this->db = $conexion;
     }
 
-    /* OBTENER TODAS LAS MEMBRESÍAS
-       Incluye nombre y cédula del cliente */
-
+    /* OBTENER TODAS LAS MEMBRESÍAS CONECTADAS CON CLIENTES */
     public function obtenerMembresias(): array {
-
         $sql = "SELECT
                     m.id_membresia,
                     m.id_cliente,
                     c.nombre_cliente,
                     c.cedula,
+                    m.nombre,
+                    m.tipo,
                     m.costo,
                     m.metodo_pago,
                     m.fecha_registro,
-                    m.fecha_vencimiento
-                FROM membresias m
+                    m.fecha_vencimiento,
+                    m.estado
+                FROM control_membresias m
                 INNER JOIN clientes c
                     ON m.id_cliente = c.id_cliente
                 ORDER BY m.id_membresia DESC";
@@ -43,19 +40,20 @@ class Membresias {
     }
 
     /* OBTENER UNA MEMBRESÍA POR SU ID */
-
     public function obtenerPorId(int $id): ?array {
-
         $sql = "SELECT
                     m.id_membresia,
                     m.id_cliente,
                     c.nombre_cliente,
                     c.cedula,
+                    m.nombre,
+                    m.tipo,
                     m.costo,
                     m.metodo_pago,
                     m.fecha_registro,
-                    m.fecha_vencimiento
-                FROM membresias m
+                    m.fecha_vencimiento,
+                    m.estado
+                FROM control_membresias m
                 INNER JOIN clientes c
                     ON m.id_cliente = c.id_cliente
                 WHERE m.id_membresia = ?";
@@ -77,11 +75,8 @@ class Membresias {
         return $membresia ?: null;
     }
 
-    /* OBTENER CLIENTES ACTIVOS
-       Se utilizan en el formulario de membresías*/
-
+    /* OBTENER CLIENTES ACTIVOS PARA EL SELECT */
     public function obtenerClientes(): array {
-
         $sql = "SELECT id_cliente, nombre_cliente, cedula
                 FROM clientes
                 WHERE estado = 'activo'
@@ -97,19 +92,18 @@ class Membresias {
     }
 
     /* REGISTRAR UNA NUEVA MEMBRESÍA */
-
     public function crear(
         int $id_cliente,
+        string $nombre,
+        string $tipo,
         float $costo,
-        string $metodo_pago,
+        string $estado,
         string $fecha_registro,
         string $fecha_vencimiento
     ): bool {
-
-        $sql = "INSERT INTO membresias
-                    (id_cliente, costo, metodo_pago,
-                     fecha_registro, fecha_vencimiento)
-                VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO control_membresias
+                    (id_cliente, nombre, tipo, costo, metodo_pago, estado, fecha_registro, fecha_vencimiento)
+                VALUES (?, ?, ?, ?, 'efectivo', ?, ?, ?)";
 
         $stmt = $this->db->prepare($sql);
 
@@ -117,37 +111,41 @@ class Membresias {
             return false;
         }
 
+        // Tipos: i (int), s (string), s (string), d (decimal/float), s (string), s (string), s (string)
         $stmt->bind_param(
-            "idsss",
+            "issdsss",
             $id_cliente,
+            $nombre,
+            $tipo,
             $costo,
-            $metodo_pago,
+            $estado,
             $fecha_registro,
             $fecha_vencimiento
         );
 
         $resultado = $stmt->execute();
-
         $stmt->close();
 
         return $resultado;
     }
 
-    /* ACTUALIZAR UNA MEMBRESÍA EXISTENTE*/
-
+    /* ACTUALIZAR UNA MEMBRESÍA EXISTENTE */
     public function actualizar(
         int $id,
         int $id_cliente,
+        string $nombre,
+        string $tipo,
         float $costo,
-        string $metodo_pago,
+        string $estado,
         string $fecha_registro,
         string $fecha_vencimiento
     ): bool {
-
-        $sql = "UPDATE membresias
+        $sql = "UPDATE control_membresias
                 SET id_cliente = ?,
+                    nombre = ?,
+                    tipo = ?,
                     costo = ?,
-                    metodo_pago = ?,
+                    estado = ?,
                     fecha_registro = ?,
                     fecha_vencimiento = ?
                 WHERE id_membresia = ?";
@@ -159,27 +157,26 @@ class Membresias {
         }
 
         $stmt->bind_param(
-            "idsssi",
+            "issdsssi",
             $id_cliente,
+            $nombre,
+            $tipo,
             $costo,
-            $metodo_pago,
+            $estado,
             $fecha_registro,
             $fecha_vencimiento,
             $id
         );
 
         $resultado = $stmt->execute();
-
         $stmt->close();
 
         return $resultado;
     }
 
-    /* ELIMINAR UNA MEMBRESÍA*/
-
+    /* ELIMINAR UNA MEMBRESÍA */
     public function eliminar(int $id): bool {
-
-        $sql = "DELETE FROM membresias
+        $sql = "DELETE FROM control_membresias
                 WHERE id_membresia = ?";
 
         $stmt = $this->db->prepare($sql);
@@ -189,13 +186,10 @@ class Membresias {
         }
 
         $stmt->bind_param("i", $id);
-
         $resultado = $stmt->execute();
-
         $stmt->close();
 
         return $resultado;
     }
 }
-
 ?>

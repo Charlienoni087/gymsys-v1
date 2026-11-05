@@ -1,7 +1,5 @@
-
 <?php
-
-/* VARIABLES DEL MÓDULO DE MEMBRESÍAS*/
+/* VISTA DE MEMBRESÍAS — GYMSYS DARK & BLUE */
 
 $listaMembresias = $listaMembresias ?? [];
 $listaClientes = $listaClientes ?? [];
@@ -10,681 +8,236 @@ $toast = $toast ?? null;
 
 $u_id = $u_id ?? "";
 $u_id_cliente = $u_id_cliente ?? "";
+$u_nombre = $u_nombre ?? "";
+$u_tipo = $u_tipo ?? "";
 $u_costo = $u_costo ?? "";
 $u_metodo_pago = $u_metodo_pago ?? "efectivo";
 $u_fecha_registro = $u_fecha_registro ?? date('Y-m-d');
 $u_fecha_vencimiento = $u_fecha_vencimiento ?? "";
+$u_estado = $u_estado ?? "Activa";
 ?>
-<!-- ESTILOS Y RECURSOS DE MEMBRESÍAS -->
 
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/variables.css">
-    <link rel="stylesheet" href="../assets/css/notification.css">
-</head>
-<style>
-
-/* REDUCIR LETRAS DE CLIENTE, CÉDULA, cOSTO etc*/
-.tabla-membresias td:nth-child(1),
-.tabla-membresias td:nth-child(2),
-.tabla-membresias td:nth-child(3) 
-.tabla-membresias td:nth-child(4)   
-.tabla-membresias td:nth-child(5)   
-.tabla-membresias td:nth-child(6)
-{
-    font-size: 13px;
-}
-
-/* ESTILOS GENERALES */
-
-.modulo-membresias {
-    background-color: var(--gym-negro);
-    color: #ffffff;
-   border: none;
-    border-radius: 16px;
-    padding: 30px;
-    min-height: 650px;
-}
-
-.modulo-membresias .titulo-seccion {
-    font-weight: bold;
-    margin-bottom: 24px;
-}
-
-.modulo-membresias .btn-accion {
-    background-color: var(--gym-amarillo-osc);
-    color: var(--gym-negro);
-    border: 1px solid var(--gym-amarillo-osc);
-    padding: 12px 10px;
-    font-weight: 500;
-}
-
-.modulo-membresias .btn-accion:hover {
-    background-color: #ffe34d;
-    border-color: #ffe34d;
-}
-
-.modulo-membresias .btn-eliminar {
-    color: #dc3545;
-    font-weight: bold;
-}
-
-.modulo-membresias .buscador-membresias {
-    border: 2px solid var(--gym-amarillo-osc);
-    border-radius: 8px;
-    min-height: 48px;
-}
-
-.modulo-membresias .tabla-membresias thead th {
-    background-color: var(--gym-amarillo-osc);
-    color: var(--gym-negro);
-    white-space: nowrap;
-}
-
-.modulo-membresias .tabla-membresias tbody td {
-    vertical-align: middle;
-}
-
-.modulo-membresias .modal-content {
-    border: 1px solid var(--gym-amarillo-osc);
-}
-
-.modulo-membresias .modal-header {
-    background-color: var(--gym-amarillo-osc);
-    color: var(--gym-negro);
-}
-
-.modulo-membresias .modal-body,
-.modulo-membresias .modal-footer {
-    background-color: var(--gym-negro);
-    color: #ffffff;
-}
-
-.modulo-membresias .form-control:focus,
-.modulo-membresias .form-select:focus {
-    border-color: var(--gym-amarillo-osc);
-    box-shadow: 0 0 0 0.2rem rgba(255, 230, 0, 0.2);
-}
-
-@media (max-width: 768px) {
-    .modulo-membresias {
-        padding: 16px;
-    }
-}
-
-/* MODAL DE MEMBRESÍAS - MISMO DISEÑO QUE CLIENTES*/
-
-#modalMembresia .modal-content {
-    background-color: var(--gym-negro, #0d0d0d);
-    color: #ffffff;
-    border: 1px solid var(--gym-amarillo-osc, #ffd600);
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* Encabezado amarillo */
-#modalMembresia .modal-header {
-    background-color: var(--gym-amarillo-osc, #ffd600);
-    color: #ffffff;
-    border-bottom: 1px solid var(--gym-amarillo-osc, #ffd600);
-}
-
-#modalMembresia .modal-title {
-    color: #ffffff;
-    font-weight: 700;
-}
-
-/* Botón para cerrar */
-#modalMembresia .btn-close {
-    filter: none;
-    opacity: 0.7;
-}
-
-#modalMembresia .btn-close:hover {
-    opacity: 1;
-}
-
-/* Etiquetas */
-#modalMembresia .form-label {
-    color: #ffffff;
-    font-weight: 500;
-}
-
-/* Campos de texto y listas desplegables */
-#modalMembresia .form-control,
-#modalMembresia .form-select {
-    background-color: #0d0d0d;
-    color: #ffffff;
-    border: 2px solid var(--gym-amarillo-osc, #ffd600);
-    border-radius: 8px;
-}
-
-#modalMembresia .form-control::placeholder {
-    color: #888888;
-}
-
-#modalMembresia .form-control:focus,
-#modalMembresia .form-select:focus {
-    background-color: #0d0d0d;
-    color: #ffffff;
-    border-color: #ffd600;
-    box-shadow: 0 0 0 0.2rem rgba(255, 214, 0, 0.2);
-}
-
-/* Opciones de las listas */
-#modalMembresia .form-select option {
-    background-color: #0d0d0d;
-    color: #ffffff;
-}
-
-/* Pie del modal */
-#modalMembresia .modal-footer {
-    background-color: #0d0d0d;
-    border-top: 1px solid #333333;
-}
-
-/* Botón secundario */
-#modalMembresia .btn-secondary {
-    background-color: #6c757d;
-    color: #ffffff;
-    border: none;
-}
-
-/* Mantener legible el texto de ayuda */
-#modalMembresia .text-warning {
-    color: #ffd600 !important;
-}
-
-</style>
-
-<!-- CONTENEDOR PRINCIPAL -->
-
-<div class="container-fluid my-4 modulo-membresias">
-
-    <!-- BOTONES DE ACCIÓN-->
-
-    <p class="fw-bold">¿Qué deseas hacer hoy?</p>
-
-    <div class="row g-3 mb-5">
-
-        <div class="col-12 col-sm-6 col-lg-4 d-grid">
-            <button
-                type="button"
-                class="btn btn-accion"
-                id="btnAgregarMembresia"
-                data-bs-toggle="modal"
-                data-bs-target="#modalMembresia">
-
-                <i class="bi bi-plus-lg fs-5"></i>
-                Agregar membresía
-
+<div class="gym-card modulo-membresias mb-4">
+    <!-- Header del Módulo -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-gym">
+        <div>
+            <h3 class="fw-bold text-gym-main m-0">Control de Membresías</h3>
+            <p class="text-gym-muted small m-0">Administra planes, suscripciones de clientes y estados del gimnasio.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-accion" id="btnAgregarMembresia" data-bs-toggle="modal" data-bs-target="#modalMembresia">
+                <i class="bi bi-plus-lg me-1"></i> Nueva membresía
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnEditarMembresia">
+                <i class="bi bi-pencil me-1"></i> Editar
+            </button>
+            <button type="button" class="btn btn-outline-danger" id="btnEliminarMembresia">
+                <i class="bi bi-trash me-1"></i> Eliminar
             </button>
         </div>
-
-        <div class="col-12 col-sm-6 col-lg-4 d-grid">
-            <button
-                type="button"
-                class="btn btn-accion"
-                id="btnEditarMembresia">
-
-                <i class="bi bi-pencil fs-5"></i>
-                Editar
-
-            </button>
-        </div>
-
-        <div class="col-12 col-sm-6 col-lg-4 d-grid">
-            <button
-                type="button"
-                class="btn btn-accion btn-eliminar"
-                id="btnEliminarMembresia">
-
-                <i class="bi bi-trash fs-5"></i>
-                Eliminar
-
-            </button>
-        </div>
-
     </div>
 
-    <!-- BUSCADOR DE MEMBRESÍAS -->
-
+    <!-- Buscador y Métricas Rápidas -->
     <div class="row align-items-center g-3 mb-4">
-
-        <div class="col-12 col-lg-6">
-            <h4 class="fw-bold mb-0">Membresías registradas</h4>
+        <div class="col-12 col-md-6 col-lg-7">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge-gym-blue">
+                    <i class="bi bi-card-checklist"></i> Total: <?= count($listaMembresias) ?>
+                </span>
+            </div>
         </div>
-
-        <div class="col-12 col-lg-6">
-            <input
-                type="search"
-                id="SearchBarMembresias"
-                class="form-control buscador-membresias"
-                placeholder="Buscar por cliente o cédula..."
-                aria-label="Buscar membresías">
+        <div class="col-12 col-md-6 col-lg-5">
+            <div class="search-box-wrap">
+                <i class="bi bi-search"></i>
+                <input type="search" id="SearchBarMembresias" class="form-control" placeholder="Buscar por plan, cliente o estado..." aria-label="Buscar membresías">
+            </div>
         </div>
-
     </div>
 
-    <!-- TABLA DE MEMBRESÍAS -->
-
-    <div class="table-responsive shadow-sm rounded">
-
-        <table class="table table-striped table-bordered table-hover text-center mb-0 tabla-membresias">
-
+    <!-- Tabla de Membresías -->
+    <div class="table-responsive rounded border-gym" style="border: 1px solid var(--gym-border);">
+        <table class="table table-hover align-middle text-center mb-0 tabla-membresias">
             <thead>
                 <tr>
-                    <th>Cliente</th>
-                    <th>Cédula</th>
-                    <th>Costo</th>
-                    <th>Método de pago</th>
-                    <th>Registro</th>
-                    <th>Vencimiento</th>
-                    <th>Estado</th>
-                    <th>Seleccionar</th>
+                    <th class="py-3 text-start ps-3">Plan</th>
+                    <th class="py-3">Tipo</th>
+                    <th class="py-3">Precio</th>
+                    <th class="py-3">Estado</th>
+                    <th class="py-3">Fecha Creación</th>
+                    <th class="py-3">Fecha Vencimiento</th>
+                    <th class="py-3 pe-3" style="width: 90px;">Seleccionar</th>
                 </tr>
             </thead>
-
             <tbody id="tablaMembresias">
-
                 <?php if (!empty($listaMembresias)): ?>
-
                     <?php foreach ($listaMembresias as $membresia): ?>
-
-                        <?php
-                        /* DETERMINAR EL ESTADO DE LA MEMBRESÍA*/
-
-                        $fechaHoy = date('Y-m-d');
-
-                        $fechaVencimiento = $membresia['fecha_vencimiento'];
-
-                        $estadoMembresia = (
-                            $fechaVencimiento >= $fechaHoy
-                        ) ? 'Activa' : 'Vencida';
-
-                        $claseEstado = (
-                            $estadoMembresia === 'Activa'
-                        ) ? 'bg-success' : 'bg-danger';
-
+                        <?php 
+                            $estado = $membresia['estado'] ?? 'Activa';
+                            $badgeClass = 'badge-gym-active';
+                            if ($estado === 'Vencida') {
+                                $badgeClass = 'badge-gym-danger';
+                            } elseif ($estado === 'Inactiva') {
+                                $badgeClass = 'badge-gym-warning';
+                            } elseif ($estado === 'Suspendida') {
+                                $badgeClass = 'badge-gym-warning';
+                            }
                         ?>
-
                         <tr>
-                            <td>
-                                <?= htmlspecialchars($membresia['nombre_cliente'], ENT_QUOTES, 'UTF-8') ?>
+                            <td class="text-start ps-3">
+                                <div class="fw-bold text-gym-main"><?= htmlspecialchars($membresia['nombre'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <div class="small text-gym-muted"><?= htmlspecialchars($membresia['nombre_cliente'] ?? '', ENT_QUOTES, 'UTF-8') ?></div>
                             </td>
-
                             <td>
-                                <?= htmlspecialchars($membresia['cedula'], ENT_QUOTES, 'UTF-8') ?>
-                            </td>
-
-                            <td>
-                                C$ <?= number_format((float) $membresia['costo'], 2, '.', ',') ?>
-                            </td>
-
-                            <td>
-                                <?php if ($membresia['metodo_pago'] === 'efectivo'): ?>
-
-                                    <span class="badge bg-secondary">
-                                        Efectivo
-                                    </span>
-
-                                <?php else: ?>
-
-                                    <span class="badge bg-secondary">
-                                        Transferencia
-                                    </span>
-
-                                <?php endif; ?>
-                            </td>
-
-                            <td>
-                                <?= date('d/m/Y', strtotime($membresia['fecha_registro'])) ?>
-                            </td>
-
-                            <td>
-                                <?= date('d/m/Y', strtotime($membresia['fecha_vencimiento'])) ?>
-                            </td>
-
-                            <td>
-                                <span class="badge <?= $claseEstado ?>">
-                                    <?= $estadoMembresia ?>
+                                <span class="badge" style="background-color: var(--gym-surface-elevated); border: 1px solid var(--gym-border); color: var(--gym-primary);">
+                                    <?= htmlspecialchars($membresia['tipo'], ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    class="form-check-input check-membresia"
-                                    value="<?= (int) $membresia['id_membresia'] ?>"
-                                    aria-label="Seleccionar membresía <?= (int) $membresia['id_membresia'] ?>">
+                            <td class="fw-bold" style="color: var(--gym-primary);">
+                                C$ <?= number_format((float) $membresia['costo'], 2, '.', ',') ?>
                             </td>
-
+                            <td>
+                                <span class="<?= $badgeClass ?>">
+                                    <?= htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                            </td>
+                            <td class="text-gym-muted">
+                                <?= date('d/m/Y', strtotime($membresia['fecha_registro'])) ?>
+                            </td>
+                            <td class="text-gym-muted">
+                                <?= date('d/m/Y', strtotime($membresia['fecha_vencimiento'])) ?>
+                            </td>
+                            <td class="pe-3">
+                                <input type="checkbox" class="form-check-input check-membresia" value="<?= (int) $membresia['id_membresia'] ?>" style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+                            </td>
                         </tr>
-
                     <?php endforeach; ?>
-
                 <?php else: ?>
-
-                    <tr>
-                        <td colspan="9" class="text-center text-muted">
-                            No hay membresías registradas en el sistema.
+                    <tr id="filaSinRegistros">
+                        <td colspan="7" class="text-center py-5 text-gym-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                            No hay membresías registradas actualmente en el sistema.
                         </td>
                     </tr>
-
                 <?php endif; ?>
-
                 <tr id="filaSinResultados" style="display: none;">
-                    <td colspan="9" class="text-center text-muted">
-                        No se encontraron membresías con esa búsqueda.
+                    <td colspan="7" class="text-center py-4 text-gym-muted">
+                        <i class="bi bi-search me-2"></i>No se encontraron membresías que coincidan con la búsqueda.
                     </td>
                 </tr>
-
             </tbody>
-
         </table>
-
     </div>
-
 </div>
 
-<!-- MODAL PARA AGREGAR Y EDITAR MEMBRESÍAS-->
-
-<div
-    class="modal fade"
-    id="modalMembresia"
-    tabindex="-1"
-    aria-labelledby="modalMembresiaLabel"
-    aria-hidden="true">
-
+<!-- MODAL PARA AGREGAR Y EDITAR MEMBRESÍA -->
+<div class="modal fade" id="modalMembresia" tabindex="-1" aria-labelledby="modalMembresiaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-
         <div class="modal-content">
-
             <form action="Principal.php?page=membresias" method="POST">
-
-                <!-- ENCABEZADO DEL MODAL -->
-
                 <div class="modal-header">
-
-                    <h5 class="modal-title" id="modalMembresiaLabel">
-
-                        <?= $en_modo_edicion
-                            ? 'Editar membresía'
-                            : 'Registrar nueva membresía' ?>
-
+                    <h5 class="modal-title fw-bold" id="modalMembresiaLabel">
+                        <i class="bi <?= $en_modo_edicion ? 'bi-pencil-square' : 'bi-plus-circle' ?> me-2" style="color: var(--gym-primary);"></i>
+                        <?= $en_modo_edicion ? 'Editar membresía' : 'Registrar nueva membresía' ?>
                     </h5>
-
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Cerrar">
-                    </button>
-
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-
-                <!-- CUERPO DEL MODAL -->
-
-                <div class="modal-body">
-
-                    <input
-                        type="hidden"
-                        name="id_membresia"
-                        value="<?= htmlspecialchars((string) $u_id, ENT_QUOTES, 'UTF-8') ?>">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="id_membresia" value="<?= htmlspecialchars((string) $u_id, ENT_QUOTES, 'UTF-8') ?>">
 
                     <!-- SELECCIONAR CLIENTE -->
-
                     <div class="mb-3">
-
-                        <label for="id_cliente" class="form-label">
-                            Cliente
-                        </label>
-
-                        <select
-                            name="id_cliente"
-                            id="id_cliente"
-                            class="form-select"
-                            required>
-
-                            <option value="">
-                                Selecciona un cliente
-                            </option>
-
+                        <label for="id_cliente" class="form-label fw-semibold text-gym-main">Cliente Asociado</label>
+                        <select name="id_cliente" id="id_cliente" class="form-select" required>
+                            <option value="">Selecciona un cliente</option>
                             <?php foreach ($listaClientes as $cliente): ?>
-
-                                <option
-                                    value="<?= (int) $cliente['id_cliente'] ?>"
-                                    <?= (string) $u_id_cliente === (string) $cliente['id_cliente'] ? 'selected' : '' ?>>
-
-                                    <?= htmlspecialchars($cliente['nombre_cliente'], ENT_QUOTES, 'UTF-8') ?>
-                                    — <?= htmlspecialchars($cliente['cedula'], ENT_QUOTES, 'UTF-8') ?>
-
+                                <option value="<?= (int) $cliente['id_cliente'] ?>" <?= (string) $u_id_cliente === (string) $cliente['id_cliente'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cliente['nombre_cliente'], ENT_QUOTES, 'UTF-8') ?> — <?= htmlspecialchars($cliente['cedula'], ENT_QUOTES, 'UTF-8') ?>
                                 </option>
-
                             <?php endforeach; ?>
-
                         </select>
-
-                        <?php if (empty($listaClientes)): ?>
-
-                            <small class="text-warning">
-                                No hay clientes activos disponibles para asignar una membresía.
-                            </small>
-
-                        <?php endif; ?>
-
                     </div>
 
-                    <!-- COSTO -->
-
+                    <!-- NOMBRE DE LA MEMBRESÍA -->
                     <div class="mb-3">
-
-                        <label for="costo" class="form-label">
-                            Costo (C$)
-                        </label>
-
-                        <input
-                            type="number"
-                            name="costo"
-                            id="costo"
-                            class="form-control"
-                            min="0.01"
-                            step="0.01"
-                            placeholder="Ejemplo: 350.00"
-                            value="<?= htmlspecialchars((string) $u_costo, ENT_QUOTES, 'UTF-8') ?>"
-                            required>
-
+                        <label for="nombre" class="form-label fw-semibold text-gym-main">Nombre de la Membresía / Plan</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ej. Plan Mensual Gold" value="<?= htmlspecialchars((string) $u_nombre, ENT_QUOTES, 'UTF-8') ?>" required>
                     </div>
 
-                    <!-- MÉTODO DE PAGO -->
-
+                    <!-- TIPO DE MEMBRESÍA -->
                     <div class="mb-3">
+                        <label for="tipo" class="form-label fw-semibold text-gym-main">Tipo</label>
+                        <input type="text" name="tipo" id="tipo" class="form-control" placeholder="Ej. General, VIP, Personalizado" value="<?= htmlspecialchars((string) $u_tipo, ENT_QUOTES, 'UTF-8') ?>" required>
+                    </div>
 
-                        <label for="metodo_pago" class="form-label">
-                            Método de pago
-                        </label>
+                    <!-- PRECIO -->
+                    <div class="mb-3">
+                        <label for="costo" class="form-label fw-semibold text-gym-main">Precio (C$)</label>
+                        <input type="number" name="costo" id="costo" class="form-control" step="0.01" min="0" placeholder="Ej. 350.00" value="<?= htmlspecialchars((string) $u_costo, ENT_QUOTES, 'UTF-8') ?>" required>
+                    </div>
 
-                        <select
-                            name="metodo_pago"
-                            id="metodo_pago"
-                            class="form-select"
-                            required>
-
-                            <option
-                                value="efectivo"
-                                <?= $u_metodo_pago === 'efectivo' ? 'selected' : '' ?>>
-
-                                Efectivo
-
-                            </option>
-
-                            <option
-                                value="transferencia"
-                                <?= $u_metodo_pago === 'transferencia' ? 'selected' : '' ?>>
-
-                                Transferencia
-
-                            </option>
-
+                    <!-- ESTADO -->
+                    <div class="mb-3">
+                        <label for="estado" class="form-label fw-semibold text-gym-main">Estado</label>
+                        <select name="estado" id="estado" class="form-select" required>
+                            <option value="Activa" <?= $u_estado === 'Activa' ? 'selected' : '' ?>>Activa</option>
+                            <option value="Inactiva" <?= $u_estado === 'Inactiva' ? 'selected' : '' ?>>Inactiva</option>
+                            <option value="Vencida" <?= $u_estado === 'Vencida' ? 'selected' : '' ?>>Vencida</option>
+                            <option value="Suspendida" <?= $u_estado === 'Suspendida' ? 'selected' : '' ?>>Suspendida</option>
                         </select>
-
                     </div>
 
-                    <!-- FECHA DE REGISTRO -->
+                    <!-- FECHA DE CREACIÓN -->
+                    <div class="mb-3">
+                        <label for="fecha_registro" class="form-label fw-semibold text-gym-main">Fecha de Registro</label>
+                        <input type="date" name="fecha_registro" id="fecha_registro" class="form-control" value="<?= htmlspecialchars((string) $u_fecha_registro, ENT_QUOTES, 'UTF-8') ?>" required>
+                    </div>
 
                     <div class="mb-3">
-
-                        <label for="fecha_registro" class="form-label">
-                            Fecha de registro
-                        </label>
-
-                        <input
-                            type="date"
-                            name="fecha_registro"
-                            id="fecha_registro"
-                            class="form-control"
-                            value="<?= htmlspecialchars((string) $u_fecha_registro, ENT_QUOTES, 'UTF-8') ?>"
-                            required>
-
+                        <label for="fecha_vencimiento" class="form-label fw-semibold text-gym-main">Fecha de Vencimiento</label>
+                        <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" class="form-control" value="<?= htmlspecialchars((string) $u_fecha_vencimiento, ENT_QUOTES, 'UTF-8') ?>" required>
                     </div>
 
-                    <!-- FECHA DE VENCIMIENTO -->
-
-                    <div class="mb-3">
-
-                        <label for="fecha_vencimiento" class="form-label">
-                            Fecha de vencimiento
-                        </label>
-
-                        <input
-                            type="date"
-                            name="fecha_vencimiento"
-                            id="fecha_vencimiento"
-                            class="form-control"
-                            min="<?= htmlspecialchars((string) $u_fecha_registro, ENT_QUOTES, 'UTF-8') ?>"
-                            value="<?= htmlspecialchars((string) $u_fecha_vencimiento, ENT_QUOTES, 'UTF-8') ?>"
-                            required>
-
-                    </div>
-
+                    <!-- CAMPOS AUXILIARES OCULTOS -->
+                    <input type="hidden" name="metodo_pago" value="efectivo">
                 </div>
-
-                <!-- BOTONES DEL MODAL -->
 
                 <div class="modal-footer">
-
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <?php if ($en_modo_edicion): ?>
-
-                        <button
-                            type="submit"
-                            name="editar_membresia"
-                            class="btn btn-accion">
-
-                            <i class="bi bi-check-lg"></i>
-                            Actualizar
-
+                        <button type="submit" name="editar_membresia" class="btn btn-accion">
+                            <i class="bi bi-check-lg me-1"></i> Actualizar
                         </button>
-
                     <?php else: ?>
-
-                       
-<button
-    type="submit"
-    name="agregar_membresia"
-    class="btn"
-    style="background-color: #ffc107; color: #000000; border-color: #ffc107;"
-    <?= empty($listaClientes) ? 'disabled' : '' ?>>
-
-    <i class="bi bi-save"></i>
-    Guardar
-
-</button>
-
-
+                        <button type="submit" name="agregar_membresia" class="btn btn-accion" <?= empty($listaClientes) ? 'disabled' : '' ?>>
+                            <i class="bi bi-save me-1"></i> Guardar
+                        </button>
                     <?php endif; ?>
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-
-                        Cancelar
-
-                    </button>
-
-                </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
-<!-- CONTENEDOR PARA NOTIFICACIONES -->
-
-<div id="notificacionApp" class="notificacion-app">
-
-    <i id="notificacionIcono" class="bi"></i>
-
-    <span id="notificacionTexto"></span>
-
-    <button
-        type="button"
-        id="notificacionCerrar"
-        class="notificacion-cerrar">
-
-        <i class="bi bi-x"></i>
-
-    </button>
-
-</div>
-
-<!-- ABRIR EL MODAL AUTOMÁTICAMENTE AL EDITAR -->
-
+<!-- SCRIPTS DEL MÓDULO -->
 <?php if ($en_modo_edicion): ?>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     const elementoModal = document.getElementById('modalMembresia');
-
     if (elementoModal) {
         const modal = new bootstrap.Modal(elementoModal);
         modal.show();
     }
-
 });
 </script>
-
 <?php endif; ?>
 
-<!-- ARCHIVOS JAVASCRIPT DEL MÓDULO -->
-
-<script src="../js/notifications.js"></script>
 <script src="../js/membresias.js"></script>
 
-<!-- MOSTRAR NOTIFICACIONES DEL CONTROLADOR -->
-
 <?php if (isset($toast) && $toast !== null): ?>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     if (typeof window.mostrarNotificacion === 'function') {
-
-        window.mostrarNotificacion(
-            <?= json_encode(
-                $toast,
-                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-            ) ?>
-        );
-
+        window.mostrarNotificacion(<?= json_encode($toast, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>);
     }
-
 });
 </script>
-
 <?php endif; ?>

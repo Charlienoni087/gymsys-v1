@@ -1,13 +1,321 @@
-:root {
-    --gym-negro: #0d0d0d;
-    --gym-amarillo: #ffd600;
-    --gym-amarillo-osc: #e6c000;
-    --gym-gris: #4a4a4a;
-    --gym-gris-claro: #e5e5e5;
+/* ==========================================================================
+   GYMSYS DESIGN SYSTEM — DESIGN TOKENS
+   THEMES: DARK & BLUE (DEFAULT) + WHITE & BLUE PROFESSIONAL (LIGHT)
+   ========================================================================== */
+
+/* ==========================================================================
+   1. TEMA MODO OSCURO (POR DEFECTO)
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    /* === FONDOS Y SUPERFICIES === */
+    --gym-bg: #0B0D13;                 /* Fondo principal de toda la pantalla */
+    --gym-card-bg: #12161F;            /* Fondo de tarjetas, paneles, contenedores y modal */
+    --gym-surface: #12161F;            /* Superficie estándar */
+    --gym-surface-elevated: #161F30;   /* Superficie elevada / hover */
+    --gym-input-bg: #161F30;           /* Fondo interno (relleno) de campos de texto */
+    --gym-border: #1E2636;             /* Borde sutil (1px solid) para tarjetas, paneles, alertas */
+    --gym-border-subtle: rgba(30, 38, 54, 0.7);
+
+    /* === ACENTOS AZULES (ESTILO GYM) === */
+    --gym-primary-start: #0088FF;      /* Color inicial degradado botón principal */
+    --gym-primary-end: #1E40AF;        /* Color final degradado botón principal */
+    --gym-primary: #0088FF;            /* Color primario base */
+    --gym-primary-hover: #1A94FF;      /* Hover primario */
+    --gym-primary-active: #17389B;     /* Active primario */
+    --gym-primary-gradient: linear-gradient(135deg, #0088FF 0%, #1E40AF 100%);
+    --gym-primary-gradient-hover: linear-gradient(135deg, #1A94FF 0%, #254ECB 100%);
+    --gym-primary-glow: rgba(0, 136, 255, 0.35);
+
+    --gym-input-border: #2B5B9E;       /* Borde normal de campos de texto */
+    --gym-input-focus-border: #3B82F6; /* Borde activo/focus de campos de texto */
+    --gym-input-focus-ring: rgba(59, 130, 246, 0.25);
+    --gym-accent-icon: #4B7BEC;        /* Color de íconos dentro de inputs */
+    --gym-accent-blue: #3B82F6;        /* Azul de acento secundario */
+    --gym-blue-icon: #4B7BEC;
+
+    /* === TEXTOS Y TIPOGRAFÍA === */
+    --gym-text-main: #FFFFFF;          /* Títulos principales, labels, texto inputs y botones */
+    --gym-text-muted: #94A3B8;         /* Subtítulos, textos secundarios, placeholder, ojo */
+    --gym-text-light: #64748B;         /* Pie de página (Copyright / derechos reservados) */
+    --gym-text-subtle: #475569;        /* Texto sutil terciario */
+
+    /* === ESTADOS Y MARCA === */
+    --gym-danger: #EF4444;             /* Error debajo inputs, cuenta bloqueada, acciones destructivas */
+    --gym-danger-bg: rgba(239, 68, 68, 0.12);
+    --gym-danger-border: rgba(239, 68, 68, 0.35);
+
+    --gym-success: #10B981;            /* Éxito / Estado Activo */
+    --gym-success-bg: rgba(16, 185, 129, 0.12);
+    --gym-success-border: rgba(16, 185, 129, 0.35);
+
+    --gym-warning: #F59E0B;            /* Advertencia / Por vencer */
+    --gym-warning-bg: rgba(245, 158, 11, 0.12);
+    --gym-warning-border: rgba(245, 158, 11, 0.35);
+
+    --gym-gold: #D4AF37;               /* Dorado exclusivo para ícono y borde del logo GYMSYS */
+
+    /* Sombras Dark & Blue */
+    --gym-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35);
+    --gym-shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45);
+    --gym-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --gym-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-.formInput{
-    background-color: var(--gym-negro);
-    border: 2px solid var(--gym-amarillo-osc);
-    color: #ffffff;
+/* ==========================================================================
+   2. TEMA MODO CLARO (AZUL + BLANCO PROFESIONAL)
+   ========================================================================== */
+[data-theme="light"] {
+    /* === FONDOS Y SUPERFICIES === */
+    --gym-bg: #F1F5F9;                 /* Fondo principal de toda la pantalla (slate claro elegante) */
+    --gym-card-bg: #FFFFFF;            /* Fondo blanco para tarjetas, paneles y contenedores */
+    --gym-surface: #FFFFFF;            /* Superficie blanca estándar */
+    --gym-surface-elevated: #F8FAFC;   /* Superficie secundaria / hover suave */
+    --gym-input-bg: #FFFFFF;           /* Fondo interno de campos de texto */
+    --gym-border: #5c5c5d;             /* Borde sutil gris claro */
+    --gym-border-subtle: #EDF2F7;
+
+    /* === ACENTOS AZULES (ESTILO GYM CORPORATIVO) === */
+    --gym-primary-start: #0066FF;      /* Azul vibrante moderno */
+    --gym-primary-end: #1E40AF;        /* Azul real profundo */
+    --gym-primary: #0066FF;
+    --gym-primary-hover: #0052CC;
+    --gym-primary-active: #17389B;
+    --gym-primary-gradient: linear-gradient(135deg, #0066FF 0%, #1E40AF 100%);
+    --gym-primary-gradient-hover: linear-gradient(135deg, #0052CC 0%, #1E3A8A 100%);
+    --gym-primary-glow: rgba(0, 102, 255, 0.25);
+
+    --gym-input-border: #CBD5E1;       /* Borde suave de inputs */
+    --gym-input-focus-border: #0066FF; /* Borde activo de inputs */
+    --gym-input-focus-ring: rgba(0, 102, 255, 0.2);
+    --gym-accent-icon: #2563EB;        /* Íconos azul vibrante */
+    --gym-accent-blue: #0066FF;
+    --gym-blue-icon: #2563EB;
+
+    /* === TEXTOS Y TIPOGRAFÍA === */
+    --gym-text-main: #0F172A;          /* Títulos principales y texto oscuro de alto contraste */
+    --gym-text-muted: #64748B;         /* Subtítulos y textos secundarios */
+    --gym-text-light: #94A3B8;         /* Textos discretos y pie de página */
+    --gym-text-subtle: #CBD5E1;
+
+    /* === ESTADOS Y MARCA === */
+    --gym-danger: #DC2626;
+    --gym-danger-bg: #FEF2F2;
+    --gym-danger-border: #FCA5A5;
+
+    --gym-success: #059669;
+    --gym-success-bg: #ECFDF5;
+    --gym-success-border: #A7F3D0;
+
+    --gym-warning: #D97706;
+    --gym-warning-bg: #FFFBEB;
+    --gym-warning-border: #FDE68A;
+
+    --gym-gold: #B45309;               /* Dorado/Ámbar elegante sobre fondo claro */
+
+    /* Sombras Modo Claro (Suaves, limpias y profesionales) */
+    --gym-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --gym-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+    --gym-shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.1);
+    --gym-shadow-card: 0 2px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ==========================================================================
+   3. VALORES COMUNES (RADIOS, TRANSICIONES, COMPATIBILIDAD)
+   ========================================================================== */
+:root {
+    --gym-radius-sm: 6px;
+    --gym-radius-md: 10px;
+    --gym-radius-lg: 14px;
+    --gym-radius-xl: 18px;
+
+    /* Transición suave global de color y fondo */
+    --gym-transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   4. RESET & ESTILOS GLOBALES DE FORMULARIO
+   ========================================================================== */
+.form-control,
+.form-select,
+.formInput {
+    background-color: var(--gym-input-bg) !important;
+    border: 1px solid var(--gym-input-border) !important;
+    color: var(--gym-text-main) !important;
+    border-radius: var(--gym-radius-md) !important;
+    padding: 0.65rem 0.95rem;
+    font-size: 0.925rem;
+    transition: var(--gym-transition);
+}
+
+.form-control::placeholder,
+.formInput::placeholder {
+    color: var(--gym-text-muted) !important;
+    opacity: 0.7;
+}
+
+.form-control:focus,
+.form-select:focus,
+.formInput:focus {
+    background-color: var(--gym-input-bg) !important;
+    border-color: var(--gym-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--gym-input-focus-ring) !important;
+    outline: none !important;
+    color: var(--gym-text-main) !important;
+}
+
+/* Buscador Global y Alineación de Ícono */
+.search-box-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box-wrap > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gym-blue-icon, #4B7BEC);
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 5;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-box-wrap > input,
+.search-box-wrap > .form-control {
+    padding-left: 2.75rem !important;
+    width: 100%;
+}
+
+/* ==========================================================================
+   5. BOTÓN DE CONMUTACIÓN DE TEMA (MODO CLARO / MODO OSCURO)
+   ========================================================================== */
+.btn-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.42rem 0.85rem;
+    border-radius: 9999px;
+    background-color: var(--gym-card-bg);
+    border: 1px solid var(--gym-border);
+    color: var(--gym-text-main);
+    font-size: 0.825rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--gym-transition);
+    box-shadow: var(--gym-shadow-sm);
+    outline: none;
+    user-select: none;
+}
+
+.btn-theme-toggle:hover {
+    background-color: var(--gym-surface-elevated);
+    border-color: var(--gym-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--gym-shadow-md);
+}
+
+.btn-theme-toggle i {
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.btn-theme-toggle:hover i {
+    transform: rotate(15deg);
+}
+
+/* ==========================================================================
+   6. CONTROL ADAPTATIVO DE LEGIBILIDAD (DARK VS LIGHT)
+   ========================================================================== */
+[data-theme="dark"] body .text-dark,
+[data-theme="dark"] .content-frame .text-dark,
+[data-theme="dark"] .modal-content .text-dark {
+    color: #FFFFFF !important;
+}
+
+[data-theme="light"] body .text-dark,
+[data-theme="light"] .content-frame .text-dark,
+[data-theme="light"] .modal-content .text-dark {
+    color: #0F172A !important;
+}
+
+/* Clases semánticas universales */
+.text-gym-main {
+    color: var(--gym-text-main) !important;
+}
+
+.text-gym-muted {
+    color: var(--gym-text-muted) !important;
+}
+
+.bg-gym-card {
+    background-color: var(--gym-card-bg) !important;
+}
+
+.border-gym {
+    border-color: var(--gym-border) !important;
+}
+
+/* ==========================================================================
+   7. BADGES GLOBALES ADAPTATIVOS
+   ========================================================================== */
+.badge-gym-active {
+    background-color: var(--gym-success-bg);
+    color: var(--gym-success);
+    border: 1px solid var(--gym-success-border);
+    font-weight: 600;
+    font-size: 0.785rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-gym-warning {
+    background-color: var(--gym-warning-bg);
+    color: var(--gym-warning);
+    border: 1px solid var(--gym-warning-border);
+    font-weight: 600;
+    font-size: 0.785rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-gym-danger {
+    background-color: var(--gym-danger-bg);
+    color: var(--gym-danger);
+    border: 1px solid var(--gym-danger-border);
+    font-weight: 600;
+    font-size: 0.785rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-gym-blue {
+    background-color: rgba(0, 102, 255, 0.12);
+    color: var(--gym-primary);
+    border: 1px solid rgba(0, 102, 255, 0.3);
+    font-weight: 600;
+    font-size: 0.785rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }

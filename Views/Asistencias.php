@@ -20,23 +20,30 @@ $ahora = date('H:i');
 ?>
 
 <section id="panelAsistencia" class="no-imprimir d-none mb-4" aria-label="Registro de asistencia">
-    <div class="row g-3">
+    <div class="row g-4">
 
-        <!-- Formulario de registro -->
+        <!-- Formulario de Registro -->
         <div class="col-12 col-lg-5">
             <div class="rep-panel h-100">
-                <h3 class="h5 text-white mb-1">Registrar asistencia</h3>
-                <p class="mb-3" style="color:#a8a8a8; font-size:.9rem;">
-                    Deja la salida vacía si el cliente sigue en el gimnasio; luego podrás marcarla en la lista.
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="venc-avatar" style="width: 34px; height: 34px; border-radius: 8px; font-size: 0.9rem; background: var(--gym-primary-subtle); color: var(--gym-primary); display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h3 class="h5 fw-bold text-dark m-0">Registrar Entrada / Salida</h3>
+                </div>
+                <p class="text-muted small mb-3">
+                    Deja la hora de salida en blanco si el cliente se encuentra entrenando actualmente; podrás marcarla luego.
                 </p>
 
                 <?php if (empty($listaClientes)): ?>
-                    <p class="mb-0">No hay clientes activos. Registra un cliente antes de anotar asistencias.</p>
+                    <div class="alert alert-warning small py-2 px-3 rounded-3" style="background-color: var(--gym-champagne-light); color: var(--gym-champagne-dark); border: 1px solid #E8D5AC;">
+                        <i class="bi bi-info-circle me-1"></i> No hay clientes activos. Registra clientes antes de anotar asistencias.
+                    </div>
                 <?php else: ?>
                     <form method="POST" action="../Controllers/AsistenciasController.php" id="formAsistencia">
                         <div class="mb-3">
-                            <label for="asisCliente">Cliente</label>
-                            <select class="form-select" id="asisCliente" name="id_cliente" required>
+                            <label for="asisCliente" class="form-label fw-semibold text-dark">Cliente</label>
+                            <select class="form-select formInput" id="asisCliente" name="id_cliente" required>
                                 <option value="" selected disabled>Selecciona un cliente</option>
                                 <?php foreach ($listaClientes as $c): ?>
                                     <option value="<?= (int) $c['id_cliente'] ?>">
@@ -46,89 +53,92 @@ $ahora = date('H:i');
                             </select>
                         </div>
 
-                        <div class="row g-3 mb-3">
+                        <div class="row g-2 mb-3">
                             <div class="col-12">
-                                <label for="asisFecha">Fecha</label>
-                                <input type="date" class="form-control" id="asisFecha" name="fecha_asistencia"
+                                <label for="asisFecha" class="form-label fw-semibold text-dark">Fecha</label>
+                                <input type="date" class="form-control formInput" id="asisFecha" name="fecha_asistencia"
                                        value="<?= $hoy ?>" max="<?= $hoy ?>" required>
                             </div>
                             <div class="col-6">
-                                <label for="asisEntrada">Hora de entrada</label>
-                                <input type="time" class="form-control" id="asisEntrada" name="hora_entrada"
+                                <label for="asisEntrada" class="form-label fw-semibold text-dark">Hora entrada</label>
+                                <input type="time" class="form-control formInput" id="asisEntrada" name="hora_entrada"
                                        value="<?= $ahora ?>" required>
                             </div>
                             <div class="col-6">
-                                <label for="asisSalida">Hora de salida</label>
-                                <input type="time" class="form-control" id="asisSalida" name="hora_salida">
+                                <label for="asisSalida" class="form-label fw-semibold text-dark">Hora salida</label>
+                                <input type="time" class="form-control formInput" id="asisSalida" name="hora_salida">
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="asisObservaciones">Observaciones</label>
-                            <textarea class="form-control" id="asisObservaciones" name="observaciones"
+                            <label for="asisObservaciones" class="form-label fw-semibold text-dark">Observaciones</label>
+                            <textarea class="form-control formInput" id="asisObservaciones" name="observaciones"
                                       rows="2" maxlength="255"
-                                      placeholder="Opcional"></textarea>
+                                      placeholder="Opcional (ej: casillero 12, pase de cortesía...)"></textarea>
                         </div>
 
-                        <button type="submit" name="registrar_asistencia" class="btn btn-gym w-100">
-                            <i class="bi bi-check2-circle"></i> Registrar asistencia
+                        <button type="submit" name="registrar_asistencia" class="btn btn-gym w-100 py-2">
+                            <i class="bi bi-check2-circle me-1"></i> Registrar asistencia
                         </button>
                     </form>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Últimas asistencias -->
+        <!-- Últimas Asistencias -->
         <div class="col-12 col-lg-7">
             <div class="rep-panel h-100">
-                <h3 class="h5 text-white mb-3">Últimas asistencias</h3>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h3 class="h5 fw-bold text-dark m-0">Últimas Asistencias Registradas</h3>
+                    <span class="badge-gym-active">Hoy</span>
+                </div>
 
                 <?php if (empty($listaAsistencias)): ?>
-                    <p class="mb-0">Todavía no hay asistencias registradas. Usa el formulario para anotar la primera.</p>
+                    <p class="text-muted small py-4 text-center">Todavía no hay asistencias registradas. Usa el formulario para anotar la primera.</p>
                 <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0 rep-historial" style="--bs-table-bg: transparent;">
-                            <thead>
+                    <div class="table-responsive rounded-3 border" style="background-color: #FFFFFF;">
+                        <table class="table table-hover align-middle mb-0 text-center" style="font-size: 0.875rem;">
+                            <thead style="background-color: #FAF8F3;">
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Cliente</th>
-                                    <th>Entrada</th>
-                                    <th>Salida</th>
-                                    <th>Observaciones</th>
-                                    <th class="text-end">Acciones</th>
+                                    <th class="text-start py-2 px-3 text-muted text-uppercase small fw-bold">Cliente</th>
+                                    <th class="py-2 text-muted text-uppercase small fw-bold">Fecha</th>
+                                    <th class="py-2 text-muted text-uppercase small fw-bold">Entrada</th>
+                                    <th class="py-2 text-muted text-uppercase small fw-bold">Salida</th>
+                                    <th class="text-end py-2 px-3 text-muted text-uppercase small fw-bold">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($listaAsistencias as $a): ?>
                                     <tr>
-                                        <td><?= $asFecha($a['fecha_asistencia']) ?></td>
-                                        <td>
-                                            <?= $asE($a['nombre_cliente']) ?>
-                                            <div style="color:#a8a8a8; font-size:.8rem;"><?= $asE($a['cedula']) ?></div>
+                                        <td class="text-start py-2 px-3">
+                                            <div class="fw-semibold text-dark"><?= $asE($a['nombre_cliente']) ?></div>
+                                            <div class="text-muted small font-monospace"><?= $asE($a['cedula']) ?></div>
                                         </td>
-                                        <td><?= $asHora($a['hora_entrada']) ?></td>
+                                        <td class="text-muted"><?= $asFecha($a['fecha_asistencia']) ?></td>
+                                        <td class="font-monospace fw-semibold text-dark"><?= $asHora($a['hora_entrada']) ?></td>
                                         <td>
                                             <?php if ($a['hora_salida']): ?>
-                                                <?= $asHora($a['hora_salida']) ?>
+                                                <span class="font-monospace text-muted"><?= $asHora($a['hora_salida']) ?></span>
                                             <?php else: ?>
                                                 <form method="POST" action="../Controllers/AsistenciasController.php" class="d-inline">
                                                     <input type="hidden" name="id_asistencia" value="<?= (int) $a['id_asistencia'] ?>">
                                                     <button type="submit" name="registrar_salida"
-                                                            class="btn btn-sm btn-gym"
+                                                            class="btn btn-sm btn-outline-success py-1 px-2"
+                                                            style="font-size: 0.775rem; border-radius: 6px;"
                                                             title="Registrar la salida con la hora actual">
-                                                        Marcar salida
+                                                        <i class="bi bi-box-arrow-right me-1"></i> Marcar salida
                                                     </button>
                                                 </form>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?= $a['observaciones'] ? $asE($a['observaciones']) : '—' ?></td>
-                                        <td class="text-end">
+                                        <td class="text-end py-2 px-3">
                                             <?php if ($esAdmin): ?>
                                                 <form method="POST" action="../Controllers/AsistenciasController.php" class="d-inline"
-                                                      onsubmit="return confirm('¿Eliminar esta asistencia?');">
+                                                      onsubmit="return confirm('¿Eliminar este registro de asistencia?');">
                                                     <input type="hidden" name="id_asistencia" value="<?= (int) $a['id_asistencia'] ?>">
                                                     <button type="submit" name="eliminar_asistencia"
-                                                            class="btn btn-sm btn-outline-danger"
+                                                            class="btn btn-sm btn-outline-danger py-1 px-2"
+                                                            style="border-radius: 6px;"
                                                             aria-label="Eliminar asistencia">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -151,7 +161,6 @@ $ahora = date('H:i');
     const form = document.getElementById('formAsistencia');
     if (!form) return;
 
-    // La salida no puede ser anterior a la entrada
     form.addEventListener('submit', function (e) {
         const entrada = document.getElementById('asisEntrada').value;
         const salida  = document.getElementById('asisSalida').value;

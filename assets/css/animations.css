@@ -1,84 +1,129 @@
-/* Animaciones de login */
+/* ==========================================================================
+   GYMSYS ANIMATIONS & MICRO-INTERACTIONS
+   Smooth, Professional, Non-Intrusive Transitions
+   ========================================================================== */
+
+/* Login Fade-In */
 .pagina {
-     animation: fadeIn 0.5s ease-in-out;
- }
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 @keyframes fadeIn {
-     from {
-         opacity: 0;
-         transform:translateY(-30px);
-     }
-     to {
-         opacity: 1;
-         transform:translateY(0);
-     }
- }
-
- .marca-logo
- .marca-texto{
-    animation: logo 0.5s ease-in-out;
- }
-
-@keyframes logo {
-    0% {
+    from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateY(-16px);
     }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.form-interior{
-    animation: form 0.5s ease-in-out;
-}
-
-@keyframes form {
-    0% {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/*Animaciones del contenido principal*/
-
-.nav-animado {
-    animation: nav 0.8s ease-out 1 forwards;
-}
-
-@keyframes nav {
-    0% {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-    100% {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.main-content {
-    animation: mainContent 0.8s ease-in-out;
+.panel-marca {
+    animation: slideBrand 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes mainContent {
-    0% {
+@keyframes slideBrand {
+    from {
         opacity: 0;
-        transform: translateY(-30px);
+        transform: translateX(-24px);
     }
-    100% {
+    to {
         opacity: 1;
         transform: translateX(0);
     }
 }
 
-.content-frame {
-    position: relative;
-    overflow: hidden; 
+.form-interior {
+    animation: slideForm 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes slideForm {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Sidebar entrance */
+.nav-animado {
+    animation: navEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes navEntrance {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Page content smooth reveal */
+.main-content {
+    animation: contentReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes contentReveal {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Page Transition Layer - Completely non-blocking */
+#transicion {
+    display: none !important;
+}
+
+#transicion.cubriendo {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gym-bg, #F7F5F0);
+    z-index: 1030;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+@media (max-width: 767.98px) {
+    #transicion.cubriendo {
+        left: 0;
+    }
+}
+
+/* Respeto estricto a prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .pagina,
+    .panel-marca,
+    .form-interior,
+    .nav-animado,
+    .main-content,
+    #transicion {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}

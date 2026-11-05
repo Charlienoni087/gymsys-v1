@@ -1,382 +1,281 @@
-    .reportes-container {
-        background-color: var(--gym-negro);
-        color: #ffffff;
-    }
-    .btn-gym {
-        background-color: var(--gym-amarillo-osc);
-        color: #000;
-        font-weight: 600;
-        border: none;
-    }
-    .btn-gym:hover:not(:disabled) {
-        background-color: #fff600;
-        color: #000;
-    }
-    .btn-gym:disabled {
-        opacity: 0.45;
-    }
+/* ==========================================================================
+   GYMSYS REPORTES & ASISTENCIAS STYLES (ADAPTIVE THEMES: DARK & BLUE + LIGHT)
+   ========================================================================== */
 
-    /* Encabezado */
-    .rep-encabezado {
-        background: #161616;
-        border: 1px solid #333333;
-        border-radius: 10px;
-        padding: 1.5rem;
-        text-align: center;
-    }
-    .rep-encabezado i {
-        font-size: 1.75rem;
-        color: var(--gym-amarillo-osc);
-    }
-
-    /* Tarjetas selectoras de reporte */
-    .rep-tarjeta {
-        width: 100%;
-        height: 100%;
-        text-align: left;
-        background: #161616;
-        border: 1px solid #4a4a4a;
-        border-radius: 10px;
-        padding: 1rem 1.1rem;
-        color: #e5e5e5;
-        transition: border-color .15s ease, background-color .15s ease;
-    }
-    .rep-tarjeta:hover {
-        border-color: #8a8a8a;
-    }
-    .rep-tarjeta:focus-visible {
-        outline: 2px solid var(--gym-amarillo-osc);
-        outline-offset: 2px;
-    }
-    .rep-tarjeta i {
-        font-size: 1.25rem;
-        display: block;
-        margin-bottom: .6rem;
-    }
-    .rep-tarjeta strong {
-        display: block;
-        color: #fff;
-        font-size: 1.05rem;
-    }
-    .rep-tarjeta span {
-        color: #a8a8a8;
-        font-size: .9rem;
-    }
-    .rep-tarjeta[aria-pressed="true"] {
-        border-color: var(--gym-amarillo-osc);
-        background: #1d1b0c;
-        cursor: default;
-    }
-    .rep-tarjeta[aria-pressed="true"] i {
-        color: var(--gym-amarillo-osc);
-    }
-
-    .modo-seleccion > .col-tarjeta {
-        width: 100%;
-    }
-
-    /* Paneles y filtros */
-    .rep-panel {
-        background: #161616;
-        border: 1px solid #333333;
-        border-radius: 10px;
-        padding: 1.25rem;
-    }
-    .rep-panel label {
-        color: #e5e5e5;
-        font-size: .9rem;
-        margin-bottom: .25rem;
-    }
-    .rep-panel .form-control,
-    .rep-panel .form-select {
-        background: var(--gym-negro);
-        border: 1px solid #4a4a4a;
-        color: #fff;
-    }
-    .rep-panel .form-control:focus,
-    .rep-panel .form-select:focus {
-        border-color: var(--gym-amarillo-osc);
-        box-shadow: 0 0 0 .2rem rgba(255, 214, 0, .2);
-    }
-    .rep-panel .form-control::placeholder {
-        color: #7d7d7d;
-    }
-    .rep-panel input[type="date"],
-    .rep-panel input[type="time"] {
-        color-scheme: dark;
-    }
-
-    /* Tablas de resultados */
-    .rep-resultado {
-        background: #e5e5e5;
-        color: #111;
-        border-radius: 10px;
-        padding: 1.25rem;
-    }
-    .rep-resultado h3 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0;
-    }
-    .rep-resultado .rep-meta {
-        color: #4a4a4a;
-        font-size: .85rem;
-    }
-    .rep-tabla {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: .9rem;
-        background: #fff;
-    }
-    .rep-tabla th {
-        background: var(--gym-amarillo-osc);
-        color: #000;
-        font-weight: 600;
-        text-align: left;
-        padding: .55rem .7rem;
-        white-space: nowrap;
-    }
-    .rep-tabla td {
-        padding: .5rem .7rem;
-        border-bottom: 1px solid #cfcfcf;
-        color: #111;
-    }
-    .rep-tabla td.num {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-    }
-    .rep-tabla tbody tr:nth-child(even) {
-        background: #f4f4f4;
-    }
-
-    /* Chips de estado */
-    .rep-chip {
-        display: inline-block;
-        padding: .1rem .55rem;
-        border-radius: 999px;
-        font-size: .78rem;
-        font-weight: 600;
-        border: 1px solid #111;
-        background: #fff;
-        color: #111;
-    }
-    .rep-chip.ok {
-        background: var(--gym-amarillo-osc);
-        border-color: var(--gym-amarillo-osc);
-        color: #000;
-    }
-    .rep-chip.alerta {
-        background: #111;
-        color: #fff;
-    }
-
-    /* Tabla de historial */
-    .tabla-historial thead th {
-        background-color: var(--gym-amarillo-osc);
-        color: #000;
-        font-weight: 600;
-    }
-
-    .rep-impresion-encabezado {
-        display: none;
-    }
-
-    /* Optimización de impresión */
-    @media print {
-        #sidebarMenu,
-        .navbar,
-        .no-imprimir,
-        .notificacion-app,
-        footer {
-            display: none !important;
-        }
-
-        body, .reportes-container {
-            background: #fff !important;
-            color: #000 !important;
-        }
-
-        .rep-impresion-encabezado {
-            display: block;
-            text-align: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 16px;
-            color: #000;
-        }
-        .rep-impresion-encabezado h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-        .rep-impresion-encabezado p {
-            margin: 2px 0;
-            font-size: 12px;
-        }
-
-        .rep-resultado {
-            background: #fff !important;
-            padding: 0;
-            border-radius: 0;
-        }
-        .rep-tabla {
-            font-size: 11px;
-        }
-        .rep-tabla th,
-        .rep-tabla td {
-            border: 1px solid #000 !important;
-            color: #000 !important;
-        }
-        .rep-tabla th {
-            background: #e5e5e5 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-        .rep-tabla tbody tr:nth-child(even) {
-            background: #fff !important;
-        }
-        .rep-chip {
-            background: #fff !important;
-            color: #000 !important;
-            border: 1px solid #000 !important;
-        }
-
-        tr {
-            page-break-inside: avoid;
-        }
-        thead {
-            display: table-header-group;
-        }
-        @page {
-            margin: 1.5cm;
-        }
-    }
-
-    /* Posición de notificación */
-    .notificacion-app { top: 50%; bottom: auto; transform: translate(-50%, -50%); }
-    .notificacion-app.mostrar,
-    .notificacion-app.ocultar { transform: translate(-50%, -50%); }
-
-    /* ===== Solo impresión: nada de esto se ve en pantalla ===== */
-.rep-impresion-encabezado,
-.rep-impresion-pie,
-#printRoot { display: none; }
-
-@page {
-    size: A4 landscape;
-    margin: 0;               /* quita fecha, URL y "1/2" que pone el navegador */
+.reportes-container {
+    background-color: var(--gym-card-bg);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.75rem;
+    box-shadow: var(--gym-shadow-card);
+    color: var(--gym-text-main);
+    transition: var(--gym-transition);
 }
 
-@media print {
-    html, body {
-        background: #fff !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+.btn-gym {
+    background: linear-gradient(135deg, var(--gym-primary-start) 0%, var(--gym-primary-end) 100%);
+    color: #FFFFFF;
+    font-weight: 600;
+    border: 1px solid var(--gym-primary-glow);
+    border-radius: var(--gym-radius-md, 10px);
+    padding: 0.55rem 1.15rem;
+    transition: var(--gym-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    box-shadow: 0 4px 14px var(--gym-primary-glow);
+}
 
-    /* Oculta todo el sitio y deja solo la copia del reporte */
-    body > *:not(#printRoot) { display: none !important; }
+.btn-gym:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--gym-primary-hover) 0%, var(--gym-primary-end) 100%);
+    border-color: var(--gym-input-focus-border);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px var(--gym-primary-glow);
+}
 
-    #printRoot {
-        display: block !important;
-        width: 100%;
-        padding: 12mm;
-        box-sizing: border-box;
-        background: #fff !important;
-    }
+.btn-gym:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
-    #printRoot,
-    #printRoot * {
-        color: #000 !important;
-        opacity: 1 !important;
-        text-shadow: none !important;
-        font-family: Arial, Helvetica, sans-serif;
-    }
+/* Encabezado */
+.rep-encabezado {
+    background: var(--gym-surface-elevated);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    transition: var(--gym-transition);
+}
 
-    #printRoot .no-imprimir { display: none !important; }
+.rep-encabezado i {
+    font-size: 2.2rem;
+    color: var(--gym-primary);
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
 
-    /* Encabezado */
-    #printRoot .rep-impresion-encabezado {
-        display: block !important;
-        text-align: center;
-        padding-bottom: 8px;
-        margin-bottom: 14px;
-        border-bottom: 2px solid #000;
-    }
-    #printRoot .rep-impresion-encabezado h2 {
-        font-size: 20pt;
-        font-weight: 700;
-        margin: 0 0 4px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    #printRoot .rep-impresion-encabezado p {
-        font-size: 10pt;
-        margin: 2px 0;
-    }
+.rep-encabezado h2 {
+    color: var(--gym-text-main) !important;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
 
-    /* Quita estilos de tarjeta de pantalla */
-    #printRoot .rep-resultado {
-        background: #fff !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    #printRoot .table-responsive {
-        overflow: visible !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-    }
+/* Tarjetas selectoras de reporte */
+.rep-tarjeta {
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    background: var(--gym-card-bg);
+    border: 1.5px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.25rem 1.4rem;
+    color: var(--gym-text-main);
+    transition: var(--gym-transition);
+    box-shadow: var(--gym-shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-    /* Tabla */
-    #printRoot .rep-tabla {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        font-size: 10pt;
-        background: #fff !important;
-    }
-    #printRoot .rep-tabla th,
-    #printRoot .rep-tabla td {
-        border: 1px solid #000 !important;
-        padding: 6px 8px !important;
-        text-align: left;
-        vertical-align: middle;
-        background: #fff !important;
-    }
-    #printRoot .rep-tabla thead { display: table-header-group; }
-    #printRoot .rep-tabla thead th {
-        background: #d9d9d9 !important;
-        font-weight: 700;
-        font-size: 9pt;
-        text-transform: uppercase;
-    }
-    #printRoot .rep-tabla tbody tr:nth-child(even) td { background: #f2f2f2 !important; }
-    #printRoot .rep-tabla tr { break-inside: avoid; page-break-inside: avoid; }
-    #printRoot .rep-tabla td.num { text-align: right; white-space: nowrap; }
+.rep-tarjeta:hover {
+    border-color: var(--gym-primary);
+    background-color: var(--gym-surface-elevated);
+    transform: translateY(-2px);
+    box-shadow: var(--gym-shadow-md);
+}
 
-    /* Chips de estado */
-    #printRoot .rep-chip {
-        display: inline-block;
-        background: transparent !important;
-        border: 1px solid #000 !important;
-        border-radius: 3px !important;
-        padding: 0 6px !important;
-        font-size: 8.5pt !important;
-        font-weight: 600;
-    }
+.rep-tarjeta:focus-visible {
+    outline: 2px solid var(--gym-primary);
+    outline-offset: 2px;
+}
 
-    /* Pie */
-    #printRoot .rep-impresion-pie {
-        display: block !important;
-        margin-top: 10px;
-        padding-top: 6px;
-        border-top: 1px solid #000;
-        font-size: 10pt;
-        text-align: right;
-    }
+.rep-tarjeta i {
+    font-size: 1.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--gym-surface-elevated);
+    color: var(--gym-primary);
+    margin-bottom: 1rem;
+    transition: var(--gym-transition);
+    border: 1px solid var(--gym-border);
+}
+
+.rep-tarjeta strong {
+    display: block;
+    color: var(--gym-text-main);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.rep-tarjeta span {
+    color: var(--gym-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.rep-tarjeta[aria-pressed="true"] {
+    border-color: var(--gym-primary);
+    background: var(--gym-surface-elevated);
+    box-shadow: 0 4px 16px var(--gym-primary-glow);
+}
+
+.rep-tarjeta[aria-pressed="true"] i {
+    background: var(--gym-primary);
+    color: #FFFFFF;
+}
+
+.rep-tarjeta[aria-pressed="true"] strong {
+    color: var(--gym-text-main);
+}
+
+.modo-seleccion > .col-tarjeta {
+    width: 100%;
+}
+
+/* Paneles y filtros */
+.rep-panel {
+    background: var(--gym-surface-elevated);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    transition: var(--gym-transition);
+}
+
+.rep-panel label {
+    color: var(--gym-text-main);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.rep-panel .form-control,
+.rep-panel .form-select {
+    background: var(--gym-input-bg);
+    border: 1px solid var(--gym-input-border);
+    color: var(--gym-text-main);
+    border-radius: var(--gym-radius-md, 10px);
+}
+
+.rep-panel .form-control:focus,
+.rep-panel .form-select:focus {
+    border-color: var(--gym-input-focus-border);
+    box-shadow: 0 0 0 3px var(--gym-input-focus-ring);
+}
+
+/* Área de Resultado */
+.rep-resultado {
+    background: var(--gym-card-bg);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.5rem;
+    box-shadow: var(--gym-shadow-card);
+    margin-bottom: 2rem;
+    color: var(--gym-text-main);
+    transition: var(--gym-transition);
+}
+
+.rep-resultado h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--gym-text-main);
+    margin: 0;
+}
+
+.rep-meta {
+    font-size: 0.85rem;
+    color: var(--gym-text-muted);
+    font-weight: 500;
+}
+
+/* Tabla de Reporte */
+.rep-tabla {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.rep-tabla thead th {
+    background-color: var(--gym-surface-elevated);
+    color: var(--gym-text-main);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--gym-border);
+    text-align: left;
+}
+
+.rep-tabla tbody td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--gym-border);
+    color: var(--gym-text-main);
+    font-size: 0.9rem;
+    vertical-align: middle;
+    background-color: var(--gym-card-bg);
+}
+
+.rep-tabla tbody tr:hover td {
+    background-color: var(--gym-surface-elevated);
+}
+
+.rep-tabla tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rep-tabla td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--gym-primary);
+}
+
+.rep-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.rep-chip-verde {
+    background-color: var(--gym-success-bg);
+    color: var(--gym-success);
+    border: 1px solid var(--gym-success-border);
+}
+
+.rep-chip-amarillo {
+    background-color: var(--gym-warning-bg);
+    color: var(--gym-warning);
+    border: 1px solid var(--gym-warning-border);
+}
+
+.rep-chip-rojo {
+    background-color: var(--gym-danger-bg);
+    color: var(--gym-danger);
+    border: 1px solid var(--gym-danger-border);
+}
+
+.rep-chip-azul {
+    background-color: rgba(0, 102, 255, 0.12);
+    color: var(--gym-primary);
+    border: 1px solid rgba(0, 102, 255, 0.3);
+}
+
+.rep-chip-gris {
+    background-color: var(--gym-surface-elevated);
+    color: var(--gym-text-muted);
+    border: 1px solid var(--gym-border);
 }
