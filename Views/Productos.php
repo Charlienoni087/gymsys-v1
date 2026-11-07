@@ -125,7 +125,7 @@ unset($_SESSION['toast']);
             top: 100%;
             left: 0;
             right: 0;
-            background: #FFFFFF;
+            background: #172033;
             border: 1px solid var(--gym-border);
             border-radius: 0 0 var(--gym-radius-md) var(--gym-radius-md);
             max-height: 200px;
@@ -139,7 +139,7 @@ unset($_SESSION['toast']);
             padding: 9px 12px;
             cursor: pointer;
             color: var(--gym-text-main);
-            background-color: #FFFFFF;
+            background-color: #172033;
             border-bottom: 1px solid #F2EFE6;
             font-size: 0.9rem;
             transition: background 0.15s;
@@ -298,7 +298,7 @@ unset($_SESSION['toast']);
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-dark">Categoría</label>
+                        <label class="form-label fw-semibold text-#172033">Categoría</label>
                         <select name="id_categoria" class="form-select formInput" required>
                             <option value="">Seleccione una categoría</option>
                             <?php foreach ($listaCategorias as $categoria): ?>
@@ -315,7 +315,7 @@ unset($_SESSION['toast']);
 
                     <div class="row g-2 mb-2">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark">Precio de venta</label>
+                            <label class="form-label fw-semibold text-#172033">Precio de venta</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0 fw-semibold">C$</span>
                                 <input type="number" name="precio_venta" class="form-control formInput border-start-0 ps-1" min="0.01" step="0.01" placeholder="0.00" required>
@@ -323,7 +323,7 @@ unset($_SESSION['toast']);
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark">Stock inicial</label>
+                            <label class="form-label fw-semibold text-#172033">Stock inicial</label>
                             <input type="number" name="stock_inicial" class="form-control formInput" min="0" value="0" required>
                         </div>
                     </div>
@@ -489,7 +489,7 @@ unset($_SESSION['toast']);
                 <div class="list-group rounded-3">
                     <?php foreach ($listaCategorias as $categoria): ?>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border" style="background-color: #FAF8F3;">
-                            <span class="fw-semibold text-dark">
+                            <span class="fw-semibold text-#172033">
                                 <?= htmlspecialchars($categoria['nombre_categoria'], ENT_QUOTES, 'UTF-8') ?>
                             </span>
 
