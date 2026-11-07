@@ -71,4 +71,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+        //Ver membresía
+    const btnMembresia = document.getElementById('btnMembresia');
+
+    if (btnMembresia) {
+
+        btnMembresia.addEventListener('click', function () {
+
+            const seleccionados = document.querySelectorAll(
+                '.check-cliente:checked'
+            );
+
+            if (seleccionados.length === 0) {
+                alert('Por favor, selecciona un cliente para ver su membresía.');
+                return;
+            }
+
+            if (seleccionados.length > 1) {
+                alert('Por favor, selecciona solo un cliente a la vez.');
+                return;
+            }
+
+            const idCliente = seleccionados[0].value;
+
+            window.location.href =
+                `Principal.php?page=clientes&ver_membresia=${idCliente}`;
+        });
+    }
+
 });

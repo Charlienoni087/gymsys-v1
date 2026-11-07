@@ -3,8 +3,45 @@
 //Importar los archivos necesarios
 require_once __DIR__ . "/../config/conexion.php";
 require_once __DIR__ . "/../Models/clientes.php";
+require_once __DIR__ . "/../Models/membresias.php";
 
 $modeloClientes = new Clientes($conexion);
+
+$modeloMembresias = new Membresias($conexion);
+
+/* CARGAR LOS DATOS DE LA TARJETA DE MEMBRESÍA */
+$mostrar_tarjeta = false;
+
+$t_socio = "";
+$t_plan = "";
+$t_tipo = "";
+$t_costo = 0;
+$t_estado = "";
+$t_vencimiento = "";
+
+if (isset($_GET['ver_membresia'])) {
+
+    $id_ver = filter_input(INPUT_GET, 'ver_membresia', FILTER_VALIDATE_INT);
+
+    if ($id_ver !== false && $id_ver !== null && $id_ver > 0) {
+
+        $datos_tarjeta = $modeloMembresias->obtenerPorCliente($id_ver);
+
+        if ($datos_tarjeta) {
+            $mostrar_tarjeta = true;
+
+            $t_socio = $datos_tarjeta['nombre_cliente'];
+            $t_plan = $datos_tarjeta['nombre'];
+            $t_tipo = $datos_tarjeta['tipo'];
+            $t_costo = $datos_tarjeta['costo'];
+            $t_estado = $datos_tarjeta['estado'];
+            $t_vencimiento = $datos_tarjeta['fecha_vencimiento'];
+        } else {
+            header("Location: Principal.php?page=clientes&status=sin_membresia");
+            exit;
+        }
+    }
+}
 
 
 //Agregar clientes
@@ -89,6 +126,9 @@ switch ($status) {
         break;
     case 'error':
         $toast = ['tipo' => 'error', 'mensaje' => 'Ocurrió un error al procesar la solicitud del cliente.'];
+        break;
+    case 'sin_membresia':
+        $toast = ['tipo' => 'error', 'mensaje' => 'Este cliente no tiene una membresía registrada.'];
         break;
 }
 
