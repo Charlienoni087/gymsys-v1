@@ -191,5 +191,25 @@ class Membresias {
 
         return $resultado;
     }
+
+    /* OBTENER LA MEMBRESÍA DE UN CLIENTE (prioriza la activa, luego la de vencimiento más reciente) */
+    public function obtenerPorCliente(int $id_cliente)
+    {
+        $sql = "SELECT m.id_membresia, m.id_cliente, m.nombre, m.tipo, m.costo,
+                    m.estado, m.fecha_registro, m.fecha_vencimiento,
+                    c.nombre_cliente
+                FROM control_membresias m
+                INNER JOIN clientes c ON c.id_cliente = m.id_cliente
+                WHERE m.id_cliente = ?
+                ORDER BY (m.estado = 'Activa') DESC, m.fecha_vencimiento DESC
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id_cliente);
+        $stmt->execute();
+        $fila = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return $fila ?: null;
+    }
 }
-?>

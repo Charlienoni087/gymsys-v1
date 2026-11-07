@@ -164,40 +164,215 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
         $titulo    = $tiposReporte[$tipoGenerado]['titulo'] ?? ucfirst($tipoGenerado);
         $total     = count($resultadosReporte);
         $usaFechas = in_array($tipoGenerado, ['membresias', 'clientes', 'asistencia'], true);
+
+        // Métricas ejecutivas y sumatorias para KPIs en pantalla y PDF
+        $sumDinero           = 0.0;
+        $conteoActivos       = 0;
+        $conteoInactivos     = 0;
+        $totalStock          = 0;
+        $stockCritico        = 0;
+        $sociosUnicos        = [];
+        $sesionesCompletadas = 0;
+
+        if ($total > 0) {
+            foreach ($resultadosReporte as $r) {
+                if (isset($r['costo'])) {
+                    $sumDinero += (float) $r['costo'];
+                } elseif (isset($r['precio_venta'])) {
+                    $sumDinero += (float) $r['precio_venta'] * (int) ($r['stock_disponible'] ?? 1);
+                }
+
+                if (isset($r['estado'])) {
+                    $est = mb_strtolower((string) $r['estado']);
+                    if (in_array($est, ['vigente', 'activo', 'activa'], true)) {
+                        $conteoActivos++;
+                    } else {
+                        $conteoInactivos++;
+                    }
+                }
+
+                if (isset($r['stock_disponible'])) {
+                    $stk = (int) $r['stock_disponible'];
+                    $totalStock += $stk;
+                    if ($stk <= 5) {
+                        $stockCritico++;
+                    }
+                }
+
+                if (isset($r['nombre_cliente'])) {
+                    $sociosUnicos[$r['nombre_cliente']] = true;
+                }
+
+                if (isset($r['hora_salida']) && !empty($r['hora_salida']) && $r['hora_salida'] !== '—') {
+                    $sesionesCompletadas++;
+                }
+            }
+        }
+        $numSociosUnicos = count($sociosUnicos);
+
+        // Configuración de tarjetas KPI según el tipo de reporte
+        $kpiItems = [
+            [
+                'icono' => 'bi-collection',
+                'label' => 'Total Registros',
+                'valor' => number_format($total),
+                'sub'   => 'Filas procesadas'
+            ]
+        ];
+
+        if ($tipoGenerado === 'membresias') {
+            $kpiItems[] = [
+                'icono' => 'bi-cash-stack',
+                'label' => 'Recaudación Total',
+                'valor' => 'C$ ' . number_format($sumDinero, 2),
+                'sub'   => 'Importe de registros'
+            ];
+            $kpiItems[] = [
+                'icono' => 'bi-check-circle',
+                'label' => 'Vigentes / Vencidas',
+                'valor' => $conteoActivos . ' / ' . $conteoInactivos,
+                'sub'   => $total > 0 ? (round(($conteoActivos / $total) * 100) . '% de vigencia') : '0%'
+            ];
+        } elseif ($tipoGenerado === 'clientes') {
+            $kpiItems[] = [
+                'icono' => 'bi-person-check',
+                'label' => 'Clientes Activos',
+                'valor' => number_format($conteoActivos),
+                'sub'   => $total > 0 ? (round(($conteoActivos / $total) * 100) . '% del padrón') : '0%'
+            ];
+            $kpiItems[] = [
+                'icono' => 'bi-person-x',
+                'label' => 'Clientes Inactivos',
+                'valor' => number_format($conteoInactivos),
+                'sub'   => 'Cuentas en pausa'
+            ];
+        } elseif ($tipoGenerado === 'inventario') {
+            $kpiItems[] = [
+                'icono' => 'bi-boxes',
+                'label' => 'Total Unidades',
+                'valor' => number_format($totalStock) . ' uds.',
+                'sub'   => 'Existencias en almacén'
+            ];
+            $kpiItems[] = [
+                'icono' => 'bi-exclamation-triangle',
+                'label' => 'Stock Crítico',
+                'valor' => number_format($stockCritico),
+                'sub'   => $stockCritico > 0 ? ($stockCritico . ' productos ≤ 5 uds.') : 'Inventario óptimo'
+            ];
+        } elseif ($tipoGenerado === 'asistencia') {
+            $kpiItems[] = [
+                'icono' => 'bi-people',
+                'label' => 'Socios Únicos',
+                'valor' => number_format($numSociosUnicos),
+                'sub'   => 'Asistentes distintos'
+            ];
+            $kpiItems[] = [
+                'icono' => 'bi-clock',
+                'label' => 'Salidas Marcadas',
+                'valor' => number_format($sesionesCompletadas),
+                'sub'   => ($total - $sesionesCompletadas) . ' en sala'
+            ];
+        }
+
+        $filtroTexto = !empty($filtros['estado']) ? ucfirst($filtros['estado']) : 'Todos';
+        $periodoTexto = ($usaFechas && ($filtros['rango_inicio'] !== '' || $filtros['rango_fin'] !== ''))
+            ? (rep_fecha($filtros['rango_inicio'] ?: null) . ' al ' . rep_fecha($filtros['rango_fin'] ?: null))
+            : 'Historial completo';
+
+        $kpiItems[] = [
+            'icono' => 'bi-funnel',
+            'label' => 'Filtro / Periodo',
+            'valor' => $filtroTexto,
+            'sub'   => $periodoTexto
+        ];
+
+        $folioRpt    = 'RPT-' . strtoupper(substr($tipoGenerado, 0, 3)) . '-' . date('Ymd-His');
+        $operadorRpt = $_SESSION['nombre_usuario'] ?? ($_SESSION['nombre'] ?? 'Administrador');
+        $rolRpt      = $_SESSION['rol'] ?? 'Administrador';
         ?>
 
         <!-- Área que se imprime -->
         <div id="areaImpresion">
 
-            <!-- Encabezado para impresión física/PDF -->
-            <div class="rep-impresion-encabezado">
-                <h2><?= rep_e($info['nombre_negocio'] ?? 'GYMSYS') ?></h2>
-                <p>
-                    <?= rep_e($info['direccion'] ?? 'Dirección no disponible') ?>
-                    <?= !empty($info['telefono']) ? ' · Tel: ' . rep_e($info['telefono']) : '' ?>
-                    <?= !empty($info['correo']) ? ' · ' . rep_e($info['correo']) : 'gymsys@gmail.com' ?>
-                </p>
-                <p><strong>Reporte oficial de <?= rep_e(mb_strtolower($titulo)) ?></strong></p>
-                <p>
-                    Generado el <?= date('d/m/Y H:i') ?> por <?= rep_e($_SESSION['nombre_usuario'] ?? ($_SESSION['nombre'] ?? 'usuario')) ?>
-                    <?php if ($usaFechas && ($filtros['rango_inicio'] !== '' || $filtros['rango_fin'] !== '')): ?>
-                        · Periodo: <?= rep_fecha($filtros['rango_inicio'] ?: null) ?> al <?= rep_fecha($filtros['rango_fin'] ?: null) ?>
-                    <?php endif; ?>
-                    <?php if (($filtros['estado'] ?? '') !== ''): ?>
-                        · Filtro de estado: <?= rep_e($filtros['estado']) ?>
-                    <?php endif; ?>
-                </p>
+            <!-- Encabezado corporativo institucional (Solo para impresión física / PDF) -->
+            <header class="rep-pdf-header">
+                <div class="rep-pdf-brand-col">
+                    <div class="rep-pdf-logo-wrap">
+                        <img src="../assets/img/logo.jpeg" alt="Logo GYMSYS" class="rep-pdf-logo-img">
+                    </div>
+                    <div class="rep-pdf-brand-text">
+                        <h1 class="rep-pdf-gym-title"><?= rep_e($info['nombre_negocio'] ?? 'GYMSYS CLUB & FITNESS') ?></h1>
+                        <span class="rep-pdf-gym-sub">Centro Deportivo & Plataforma Integral de Entrenamiento</span>
+                        <div class="rep-pdf-gym-contacts">
+                            <span><i class="bi bi-geo-alt-fill"></i> <?= rep_e($info['direccion'] ?? 'Sede Central') ?></span>
+                            <?php if (!empty($info['telefono'])): ?>
+                                <span> · <i class="bi bi-telephone-fill"></i> <?= rep_e($info['telefono']) ?></span>
+                            <?php endif; ?>
+                            <span> · <i class="bi bi-envelope-fill"></i> <?= rep_e($info['correo'] ?? 'contacto@gymsys.com') ?></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rep-pdf-meta-col">
+                    <div class="rep-pdf-meta-badge">DOCUMENTO OFICIAL AUDITABLE</div>
+                    <table class="rep-pdf-meta-table">
+                        <tr>
+                            <th>Folio:</th>
+                            <td><?= rep_e($folioRpt) ?></td>
+                        </tr>
+                        <tr>
+                            <th>Emisión:</th>
+                            <td><?= date('d/m/Y h:i A') ?></td>
+                        </tr>
+                        <tr>
+                            <th>Operador:</th>
+                            <td><?= rep_e($operadorRpt) ?> <span class="rep-pdf-meta-role">(<?= rep_e(ucfirst($rolRpt)) ?>)</span></td>
+                        </tr>
+                        <tr>
+                            <th>Periodo:</th>
+                            <td><?= rep_e($periodoTexto) ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </header>
+
+            <div class="rep-pdf-divider"></div>
+
+            <div class="rep-pdf-title-banner">
+                <div class="rep-pdf-title-left">
+                    <h2 class="rep-pdf-main-title">REPORTE OFICIAL DE <?= mb_strtoupper($titulo, 'UTF-8') ?></h2>
+                    <span class="rep-pdf-main-subtitle">Documento de control administrativo generado a partir de registros del sistema.</span>
+                </div>
+                <div class="rep-pdf-title-right">
+                    <span class="rep-pdf-badge-count"><?= $total ?> <?= $total === 1 ? 'REGISTRO' : 'REGISTROS' ?></span>
+                </div>
+            </div>
+
+            <!-- Resumen Ejecutivo de Métricas / KPIs (Visible en Pantalla y en Impresión) -->
+            <div class="rep-kpi-grid mb-4">
+                <?php foreach ($kpiItems as $kpi): ?>
+                    <div class="rep-kpi-card">
+                        <div class="rep-kpi-icon">
+                            <i class="bi <?= rep_e($kpi['icono']) ?>"></i>
+                        </div>
+                        <div class="rep-kpi-body">
+                            <span class="rep-kpi-label"><?= rep_e($kpi['label']) ?></span>
+                            <strong class="rep-kpi-value"><?= rep_e($kpi['valor']) ?></strong>
+                            <span class="rep-kpi-sub"><?= rep_e($kpi['sub']) ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
             <section id="zonaResultado" class="rep-resultado mb-4" aria-label="Resultado del reporte">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom no-imprimir">
                     <div>
-                        <h3 class="fw-bold fs-5 text-dark m-0">Resultado del Reporte de <?= rep_e($titulo) ?></h3>
-                        <div class="rep-meta"><?= $total ?> <?= $total === 1 ? 'registro encontrado' : 'registros encontrados' ?></div>
+                        <h3 class="fw-bold fs-5 m-0" style="color: var(--gym-text-main);">Detalle de Registros</h3>
+                        <div class="rep-meta"><?= $total ?> <?= $total === 1 ? 'registro encontrado' : 'registros encontrados' ?> para este reporte</div>
                     </div>
                     <?php if ($total > 0): ?>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
-                            <i class="bi bi-printer me-1"></i> Imprimir o Guardar PDF
+                        <button type="button" class="btn btn-gym btn-sm" onclick="imprimirReporte()">
+                            <i class="bi bi-printer-fill me-1"></i> Imprimir o Guardar PDF
                         </button>
                     <?php endif; ?>
                 </div>
@@ -207,7 +382,7 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
                         <i class="bi bi-info-circle me-1"></i> No se encontraron registros con los filtros seleccionados. Prueba con otro rango de fechas o limpia el estado.
                     </div>
                 <?php else: ?>
-                    <div class="table-responsive rounded-3 border">
+                    <div class="table-responsive rounded-3 border rep-table-container">
                         <table class="rep-tabla">
                             <thead>
                                 <tr>
@@ -221,20 +396,20 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
                                     <tr>
                                         <?php foreach ($fila as $col => $valor): ?>
                                             <?php if (in_array($col, $columnasDinero, true)): ?>
-                                                <td class="num text-dark fw-bold">C$ <?= number_format((float) $valor, 2) ?></td>
+                                                <td class="num fw-bold">C$ <?= number_format((float) $valor, 2) ?></td>
 
                                             <?php elseif (in_array($col, $columnasFecha, true)): ?>
                                                 <td class="text-muted"><?= rep_fecha($valor) ?></td>
 
                                             <?php elseif ($col === 'estado'): ?>
-                                                <?php $ok = in_array($valor, ['Vigente', 'activo'], true); ?>
-                                                <td><span class="rep-chip <?= $ok ? 'ok' : 'alerta' ?>"><?= rep_e($valor) ?></span></td>
+                                                <?php $ok = in_array(mb_strtolower((string)$valor), ['vigente', 'activo', 'activa'], true); ?>
+                                                <td><span class="rep-chip <?= $ok ? 'rep-chip-verde' : 'rep-chip-rojo' ?>"><?= rep_e(ucfirst((string)$valor)) ?></span></td>
 
                                             <?php elseif ($col === 'stock_disponible'): ?>
                                                 <td class="num">
                                                     <?= (int) $valor ?>
                                                     <?php if ((int) $valor <= 5): ?>
-                                                        <span class="rep-chip alerta ms-1">Bajo</span>
+                                                        <span class="rep-chip rep-chip-rojo ms-1">Bajo</span>
                                                     <?php endif; ?>
                                                 </td>
 
@@ -256,10 +431,33 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
                 <?php endif; ?>
             </section>
 
-            <!-- Pie solo para impresión -->
-            <div class="rep-impresion-pie">
-                Total de registros: <?= $total ?>
-            </div>
+            <!-- Pie de página institucional y firmas (Solo para impresión / PDF) -->
+            <footer class="rep-pdf-footer">
+                <div class="rep-pdf-signatures">
+                    <div class="rep-pdf-sig-box">
+                        <div class="rep-pdf-sig-line"></div>
+                        <strong class="rep-pdf-sig-name"><?= rep_e($operadorRpt) ?></strong>
+                        <span class="rep-pdf-sig-role">Generado y Validado por</span>
+                        <span class="rep-pdf-sig-detail"><?= rep_e(ucfirst($rolRpt)) ?> · GYMSYS</span>
+                    </div>
+                    <div class="rep-pdf-sig-box">
+                        <div class="rep-pdf-sig-line"></div>
+                        <strong class="rep-pdf-sig-name"><?= rep_e($info['nombre_negocio'] ?? 'Dirección General GYMSYS') ?></strong>
+                        <span class="rep-pdf-sig-role">Firma Autorizada y Sello</span>
+                        <span class="rep-pdf-sig-detail">Control Administrativo & Finanzas</span>
+                    </div>
+                </div>
+
+                <div class="rep-pdf-legal-bar">
+                    <div class="rep-pdf-legal-left">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Documento emitido por el sistema <strong>GYMSYS Club Management</strong>. La información contenida es confidencial y para uso exclusivo administrativo.</span>
+                    </div>
+                    <div class="rep-pdf-legal-right">
+                        <span>Folio <?= rep_e($folioRpt) ?></span>
+                    </div>
+                </div>
+            </footer>
 
         </div>
         <!-- /areaImpresion -->
@@ -450,13 +648,16 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
     function limpiarImpresion() {
         const r = document.getElementById('printRoot');
         if (r) r.remove();
+        document.body.classList.remove('rep-imprimiendo');
     }
 
     function prepararImpresion() {
+        if (document.getElementById('printRoot')) return;
         const origen = document.getElementById('areaImpresion');
         if (!origen || origen.classList.contains('d-none')) return;
 
         limpiarImpresion();
+        document.body.classList.add('rep-imprimiendo');
         const copia = origen.cloneNode(true);
         copia.removeAttribute('id');
         copia.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
@@ -466,6 +667,11 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
         raiz.appendChild(copia);
         document.body.appendChild(raiz);
     }
+
+    window.imprimirReporte = function () {
+        prepararImpresion();
+        window.print();
+    };
 
     window.addEventListener('beforeprint', prepararImpresion);
     window.addEventListener('afterprint', limpiarImpresion);
@@ -493,7 +699,11 @@ $hayResultado     = $resultadosReporte !== null && $tipoGenerado !== null;
 
     <?php if (!empty($autoImprimir)): ?>
     window.addEventListener('load', function () {
-        window.print();
+        if (typeof window.imprimirReporte === 'function') {
+            window.imprimirReporte();
+        } else {
+            window.print();
+        }
         history.replaceState(null, '', location.pathname + '?page=reportes');
     });
     <?php endif; ?>

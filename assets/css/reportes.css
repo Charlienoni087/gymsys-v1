@@ -279,3 +279,529 @@
     color: var(--gym-text-muted);
     border: 1px solid var(--gym-border);
 }
+
+/* ==========================================================================
+   RESUMEN EJECUTIVO (KPIS) - EN PANTALLA
+   ========================================================================== */
+
+.rep-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.rep-kpi-card {
+    background-color: var(--gym-card-bg);
+    border: 1px solid var(--gym-border);
+    border-radius: var(--gym-radius-lg, 14px);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--gym-shadow-sm);
+    transition: var(--gym-transition);
+}
+
+.rep-kpi-card:hover {
+    border-color: var(--gym-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--gym-shadow-md);
+}
+
+.rep-kpi-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(0, 136, 255, 0.12);
+    color: var(--gym-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 136, 255, 0.25);
+    transition: var(--gym-transition);
+}
+
+.rep-kpi-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.rep-kpi-label {
+    font-size: 0.775rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gym-text-muted);
+}
+
+.rep-kpi-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--gym-text-main);
+    line-height: 1.2;
+    margin: 0.2rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rep-kpi-sub {
+    font-size: 0.775rem;
+    color: var(--gym-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ocultar elementos exclusivos de impresión en pantalla */
+@media screen {
+    .rep-pdf-header,
+    .rep-pdf-divider,
+    .rep-pdf-title-banner,
+    .rep-pdf-footer,
+    .rep-impresion-encabezado,
+    .rep-impresion-pie {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN OFICIAL Y GENERACIÓN DE PDF (@media print)
+   ========================================================================== */
+@media print {
+    @page {
+        size: letter portrait;
+        margin: 12mm 14mm 14mm 14mm;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    html, body {
+        background: #FFFFFF !important;
+        color: #0F172A !important;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        font-size: 8.5pt !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        min-height: 100% !important;
+    }
+
+    /* Ocultar elementos de navegación y UI que no van en el documento PDF */
+    #sidebarMenu,
+    .gym-topbar,
+    #notificacionApp,
+    #sidebarBackdrop,
+    .modal,
+    #barraVolver,
+    #zonaTarjetas,
+    #formReporte,
+    #zonaAsistencias,
+    .rep-encabezado,
+    section[aria-label="Historial de reportes"],
+    .no-imprimir,
+    .btn-theme-toggle,
+    .btn,
+    .alert {
+        display: none !important;
+    }
+
+    /* Si se usa el contenedor aislado #printRoot */
+    body.rep-imprimiendo > *:not(#printRoot) {
+        display: none !important;
+    }
+
+    #printRoot {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #FFFFFF !important;
+    }
+
+    .content-frame,
+    .main-content,
+    .reportes-container,
+    #areaImpresion,
+    .rep-resultado {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #FFFFFF !important;
+        overflow: visible !important;
+    }
+
+    /* Encabezado Corporativo */
+    .rep-pdf-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        gap: 1.5rem !important;
+        padding-bottom: 0.8rem !important;
+    }
+
+    .rep-pdf-brand-col {
+        display: flex !important;
+        align-items: center !important;
+        gap: 1.1rem !important;
+        flex: 1 !important;
+    }
+
+    .rep-pdf-logo-wrap {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 8px !important;
+        border: 2px solid #D4AF37 !important;
+        overflow: hidden !important;
+        flex-shrink: 0 !important;
+        background: #0B0D13 !important;
+    }
+
+    .rep-pdf-logo-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+
+    .rep-pdf-gym-title {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+        color: #0F172A !important;
+        margin: 0 0 2px 0 !important;
+        letter-spacing: -0.02em !important;
+        text-transform: uppercase !important;
+        line-height: 1.1 !important;
+    }
+
+    .rep-pdf-gym-sub {
+        display: block !important;
+        font-size: 7.8pt !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
+        margin-bottom: 3px !important;
+    }
+
+    .rep-pdf-gym-contacts {
+        font-size: 7.2pt !important;
+        color: #64748B !important;
+        line-height: 1.3 !important;
+    }
+
+    .rep-pdf-meta-col {
+        text-align: right !important;
+        min-width: 240px !important;
+    }
+
+    .rep-pdf-meta-badge {
+        display: inline-block !important;
+        background: #1E40AF !important;
+        color: #FFFFFF !important;
+        font-size: 7pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        padding: 3px 9px !important;
+        border-radius: 4px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .rep-pdf-meta-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 7.8pt !important;
+    }
+
+    .rep-pdf-meta-table th {
+        text-align: right !important;
+        font-weight: 600 !important;
+        color: #64748B !important;
+        padding: 1.5px 6px 1.5px 0 !important;
+        white-space: nowrap !important;
+    }
+
+    .rep-pdf-meta-table td {
+        text-align: right !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
+        padding: 1.5px 0 !important;
+    }
+
+    .rep-pdf-meta-role {
+        font-weight: 500 !important;
+        color: #64748B !important;
+        font-size: 7.2pt !important;
+    }
+
+    /* Divisor Elegante */
+    .rep-pdf-divider {
+        display: block !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, #D4AF37 0%, #1E40AF 35%, #0088FF 100%) !important;
+        border-radius: 2px !important;
+        margin: 6px 0 12px 0 !important;
+    }
+
+    /* Banner de Título de Reporte */
+    .rep-pdf-title-banner {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        background: #F1F5F9 !important;
+        border: 1px solid #CBD5E1 !important;
+        border-left: 4px solid #1E40AF !important;
+        border-radius: 6px !important;
+        padding: 7px 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .rep-pdf-main-title {
+        font-size: 11pt !important;
+        font-weight: 800 !important;
+        color: #0F172A !important;
+        margin: 0 !important;
+        letter-spacing: -0.01em !important;
+    }
+
+    .rep-pdf-main-subtitle {
+        display: block !important;
+        font-size: 7.2pt !important;
+        color: #475569 !important;
+        margin-top: 2px !important;
+    }
+
+    .rep-pdf-badge-count {
+        display: inline-block !important;
+        background: #FFFFFF !important;
+        border: 1px solid #94A3B8 !important;
+        color: #1E293B !important;
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        padding: 3px 8px !important;
+        border-radius: 4px !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    /* Tarjetas KPI en Impresión */
+    .rep-kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .rep-kpi-card {
+        background: #F8FAFC !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 6px !important;
+        padding: 6px 9px !important;
+        display: block !important;
+    }
+
+    .rep-kpi-icon {
+        display: none !important;
+    }
+
+    .rep-kpi-label {
+        display: block !important;
+        font-size: 6.8pt !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        color: #64748B !important;
+        letter-spacing: 0.04em !important;
+        margin-bottom: 2px !important;
+    }
+
+    .rep-kpi-value {
+        display: block !important;
+        font-size: 10.5pt !important;
+        font-weight: 800 !important;
+        color: #0F172A !important;
+        line-height: 1.15 !important;
+        margin: 0 !important;
+    }
+
+    .rep-kpi-sub {
+        display: block !important;
+        font-size: 6.8pt !important;
+        color: #64748B !important;
+        margin-top: 2px !important;
+    }
+
+    /* Tabla de Datos Optimizada para Impresión Continua */
+    .rep-table-container {
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 6px !important;
+        overflow: visible !important;
+    }
+
+    .rep-tabla {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 7.8pt !important;
+        page-break-inside: auto !important;
+    }
+
+    .rep-tabla thead {
+        display: table-header-group !important;
+    }
+
+    .rep-tabla thead th {
+        background-color: #1E3A8A !important;
+        color: #FFFFFF !important;
+        font-size: 7.2pt !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        padding: 6px 8px !important;
+        border: 1px solid #1E3A8A !important;
+        text-align: left !important;
+    }
+
+    .rep-tabla tbody tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .rep-tabla tbody td {
+        padding: 5px 8px !important;
+        border: 1px solid #E2E8F0 !important;
+        color: #1E293B !important;
+        font-size: 7.8pt !important;
+        background-color: #FFFFFF !important;
+        vertical-align: middle !important;
+    }
+
+    .rep-tabla tbody tr:nth-child(even) td {
+        background-color: #F8FAFC !important;
+    }
+
+    .rep-tabla td.num {
+        text-align: right !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
+    }
+
+    /* Chips de Estado en Impresión */
+    .rep-chip {
+        display: inline-block !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        font-size: 6.8pt !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.03em !important;
+        text-transform: uppercase !important;
+    }
+
+    .rep-chip-verde {
+        background-color: #DCFCE7 !important;
+        color: #166534 !important;
+        border: 1px solid #86EFAC !important;
+    }
+
+    .rep-chip-rojo {
+        background-color: #FEE2E2 !important;
+        color: #991B1B !important;
+        border: 1px solid #FCA5A5 !important;
+    }
+
+    .rep-chip-amarillo {
+        background-color: #FEF3C7 !important;
+        color: #92400E !important;
+        border: 1px solid #FCD34D !important;
+    }
+
+    /* Firmas y Pie Institucional */
+    .rep-pdf-footer {
+        display: block !important;
+        margin-top: 24px !important;
+        padding-top: 14px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .rep-pdf-signatures {
+        display: flex !important;
+        justify-content: space-around !important;
+        gap: 3rem !important;
+        margin-bottom: 18px !important;
+        padding: 0 2rem !important;
+    }
+
+    .rep-pdf-sig-box {
+        flex: 1 !important;
+        max-width: 260px !important;
+        text-align: center !important;
+    }
+
+    .rep-pdf-sig-line {
+        border-top: 1.5px solid #0F172A !important;
+        width: 100% !important;
+        margin-bottom: 6px !important;
+    }
+
+    .rep-pdf-sig-name {
+        display: block !important;
+        font-size: 8.5pt !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
+    }
+
+    .rep-pdf-sig-role {
+        display: block !important;
+        font-size: 7.5pt !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
+    }
+
+    .rep-pdf-sig-detail {
+        display: block !important;
+        font-size: 7pt !important;
+        color: #64748B !important;
+    }
+
+    .rep-pdf-legal-bar {
+        border-top: 1px solid #CBD5E1 !important;
+        padding-top: 8px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        font-size: 7pt !important;
+        color: #64748B !important;
+    }
+
+    .rep-pdf-legal-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex: 1 !important;
+    }
+
+    .rep-pdf-legal-left i {
+        color: #1E40AF !important;
+        font-size: 8.5pt !important;
+    }
+
+    .rep-pdf-legal-right {
+        text-align: right !important;
+        white-space: nowrap !important;
+        margin-left: 1rem !important;
+        font-weight: 600 !important;
+    }
+}

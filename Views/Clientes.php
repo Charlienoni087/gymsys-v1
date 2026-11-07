@@ -1,6 +1,31 @@
 <?php 
 /** @var array $listaClientes */
+/** @var array $listaMembresias */
 $en_modo_edicion = $en_modo_edicion ?? false;
+
+/** @var bool $mostrar_tarjeta */
+/** @var string $t_socio */
+/** @var string $t_plan */
+/** @var string $t_tipo */
+/** @var string|float $t_costo */
+/** @var string $t_estado */
+/** @var string $t_vencimiento */
+$mostrar_tarjeta = $mostrar_tarjeta ?? false;
+$t_socio = $t_socio ?? '';
+$t_plan = $t_plan ?? '';
+$t_tipo = $t_tipo ?? '';
+$t_costo = $t_costo ?? 0;
+$t_estado = $t_estado ?? '';
+$t_vencimiento = $t_vencimiento ?? '';
+
+$estilosEstado = [
+    'Activa'     => ['bg' => 'rgba(22,138,112,0.35)',  'color' => '#B8D8C8', 'border' => '#168A70'],
+    'Vencida'    => ['bg' => 'rgba(200,60,60,0.30)',   'color' => '#F0C4C4', 'border' => '#C83C3C'],
+    'Suspendida' => ['bg' => 'rgba(214,160,40,0.30)',  'color' => '#F3DFAE', 'border' => '#D6A028'],
+    'Inactiva'   => ['bg' => 'rgba(150,150,150,0.30)', 'color' => '#DDDDDD', 'border' => '#999999'],
+];
+$estiloEstado = $estilosEstado[$t_estado] ?? $estilosEstado['Inactiva'];
+
 ?>
 
     <style>
@@ -245,7 +270,7 @@ $en_modo_edicion = $en_modo_edicion ?? false;
             <i class="bi bi-plus-lg"></i> Agregar cliente
         </button>
 
-        <button id="btnMembresia" class="btn-action-secondary" data-bs-toggle="modal" data-bs-target="#tarjetaMembresia">
+        <button id="btnMembresia" type="button" class="btn-action-secondary">
             <i class="bi bi-credit-card"></i> Ver membresías
         </button>
 
@@ -378,13 +403,15 @@ $en_modo_edicion = $en_modo_edicion ?? false;
 </div>
 
 <!-- Modal Tarjeta de Membresía -->
-<div class="modal fade" id="tarjetaMembresia" tabindex="-1" aria-labelledby="tarjetaMembresiaLabel" aria-hidden="true">
+<div class="modal fade" id="tarjetaMembresia" tabindex="-1" aria-labelledby="modalTarjetaMembresia" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
         <div class="modal-content vip-card-box p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-gem text-warning fs-5"></i>
-                    <span class="text-uppercase fw-bold text-white small" style="letter-spacing: 0.1em;" id="modalTarjetaMembresia">GYMSYS VIP MEMBERSHIP</span>
+                    <span class="text-uppercase fw-bold text-white small" style="letter-spacing: 0.1em;" id="modalTarjetaMembresia">
+                        GYMSYS <?= htmlspecialchars(mb_strtoupper($t_tipo ?: 'VIP'), ENT_QUOTES, 'UTF-8') ?> MEMBERSHIP
+                    </span>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
@@ -400,17 +427,17 @@ $en_modo_edicion = $en_modo_edicion ?? false;
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <span class="text-uppercase small text-white-50 d-block fw-semibold">Tipo de Plan</span>
-                            <span class="badge" style="background-color: var(--gym-champagne); color: var(--gym-deep); font-weight: 700;">Mensual Premium</span>
+                            <span class="fw-bold fs-5 text-white"><?= htmlspecialchars($t_plan ?: '-', ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
                         <div class="text-end">
                             <span class="text-uppercase small text-white-50 d-block fw-semibold">Cuota</span>
-                            <span class="fw-bold fs-5 text-white">C$720 / mes</span>
+                            <span class="fw-bold fs-5 text-white">C$<?= number_format((float) $t_costo, 2) ?></span>
                         </div>
                     </div>
 
                     <div>
                         <span class="text-uppercase small text-white-50 d-block fw-semibold">Socio Titular</span>
-                        <h4 class="fw-bold text-white m-0 text-truncate">Carlos Toledo</h4>
+                        <h4 class="fw-bold text-white m-0 text-truncate"><?= htmlspecialchars($t_socio ?: '-', ENT_QUOTES, 'UTF-8') ?></h4>
                     </div>
                 </div>
             </div>
@@ -418,11 +445,15 @@ $en_modo_edicion = $en_modo_edicion ?? false;
             <div class="d-flex justify-content-between align-items-end pt-3 mt-2" style="border-top: 1px solid rgba(221, 229, 223, 0.15);">
                 <div>
                     <span class="text-uppercase small text-white-50 d-block fw-semibold">Estado de Socio</span>
-                    <span class="badge" style="background: rgba(22, 138, 112, 0.35); color: #B8D8C8; border: 1px solid #168A70;">Activo</span>
+                    <span class="badge" style="background: <?= $estiloEstado['bg'] ?>; color: <?= $estiloEstado['color'] ?>; border: 1px solid <?= $estiloEstado['border'] ?>;">
+                        <?= htmlspecialchars($t_estado ?: '-', ENT_QUOTES, 'UTF-8') ?>
+                    </span>
                 </div>
                 <div class="text-end">
                     <span class="text-uppercase small text-white-50 d-block fw-semibold">Vigencia</span>
-                    <span class="fw-bold text-white font-monospace">01/11/2026</span>
+                    <span class="fw-bold text-white font-monospace">
+                        <?= $t_vencimiento ? date('d/m/Y', strtotime($t_vencimiento)) : '-' ?>
+                    </span>
                 </div>
             </div>
         </div>
@@ -438,6 +469,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (modalEl) {
         var modal = new bootstrap.Modal(modalEl);
         modal.show();
+    }
+});
+</script>
+<?php endif; ?>
+
+<?php if ($mostrar_tarjeta): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var tarjetaEl = document.getElementById('tarjetaMembresia');
+    if (tarjetaEl) {
+        var tarjeta = new bootstrap.Modal(tarjetaEl);
+        tarjetaEl.addEventListener('hidden.bs.modal', function () {
+            history.replaceState(null, '', 'Principal.php?page=clientes');
+        });
+        tarjeta.show();
     }
 });
 </script>
