@@ -2,29 +2,59 @@
 // Views/Facturacion.php
 require_once __DIR__ . '/../config/conexion.php';
 
+$listaFacturas   = $listaFacturas   ?? [];
+$listaClientes   = $listaClientes   ?? [];
+$listaProductos  = $listaProductos  ?? [];
+$listaMembresias = $listaMembresias ?? [];
+
+$toast = $toast ?? ($_SESSION['toast'] ?? null);
+unset($_SESSION['toast']);
+
 $facturas = [];
-$totalFacturado = 0;
+$totalFacturado = 0.0;
 $facturasMes = 0;
+$emitidas = 0; 
 $mesActual = date('Y-m');
 
 try {
-    $sql = "SELECT f.id_facturacion, f.costo, f.fecha_facturacion,
+    $modeloFacturas = new Facturas($conexion);
+    $facturas = $modeloFacturas->obtenerFacturas();   // tablas facturas + factura_detalles
+ 
+    foreach ($facturas as $f) {
+        if (strtolower($f['estado']) !== 'pagada') {
+            continue; // las anuladas no suman
+        }
+ 
+        $monto = (float) $f['total'];
+        $totalFacturado += $monto;
+        $emitidas++;
+ 
+        if (strpos($f['fecha_factura'], $mesActual) === 0) {
+            $facturasMes += $monto;
+        }
+    }
+} catch (Throwable $e) {
+    error_log($e->getMessage());
+}
+
+try {
+    $sql = "SELECT f.id_facturas, f.total, f.fecha_factura,
                    m.id_membresia, m.metodo_pago, m.fecha_registro, m.fecha_vencimiento,
                    c.nombre_cliente, c.cedula,
                    u.nombre AS nombre_usuario
-            FROM Facturacion f
+            FROM Facturas f
             LEFT JOIN Membresias m ON f.id_membresia = m.id_membresia
             LEFT JOIN Clientes c ON m.id_cliente = c.id_cliente
             LEFT JOIN Usuarios u ON f.id_usuario = u.id_usuario
-            ORDER BY f.id_facturacion DESC";
+            ORDER BY f.id_facturas DESC";
 
     $res = $conexion->query($sql);
     if ($res) {
         while ($row = $res->fetch_assoc()) {
             $facturas[] = $row;
-            $totalFacturado += (float) $row['costo'];
-            if (strpos($row['fecha_facturacion'], $mesActual) === 0) {
-                $facturasMes += (float) $row['costo'];
+            $totalFacturado += (float) $row['total'];
+            if (strpos($row['fecha_factura'], $mesActual) === 0) {
+                $facturasMes += (float) $row['total'];
             }
         }
     }
@@ -44,9 +74,9 @@ if (empty($facturas)) {
         if ($resM) {
             while ($row = $resM->fetch_assoc()) {
                 $facturas[] = [
-                    'id_facturacion' => $row['id_membresia'],
-                    'costo' => $row['costo'],
-                    'fecha_facturacion' => $row['fecha_registro'],
+                    'id_facturas' => $row['id_membresia'],
+                    'total' => $row['costo'],
+                    'fecha_factura' => $row['fecha_registro'],
                     'id_membresia' => $row['id_membresia'],
                     'metodo_pago' => $row['metodo_pago'],
                     'fecha_registro' => $row['fecha_registro'],
@@ -139,7 +169,16 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
             border-radius: 6px;
             border: 1px solid var(--gym-border);
         }
+         .facturacion-container { background-color: var(--gym-primary); color: #ffffff; }
+         .btn-gym { background-color: var(--gym-surface-elevated); color: #fff; font-weight: 600; }
+         .btn-gym:hover { background-color: #fff600; color: #fff; }
+
+    /* tabla de ítems del modal */
+    .tabla-items thead th { background-color: var(--gym-surface-elevated); color: #fff; font-size: .85rem; }
+    .total-factura { font-size: 1.4rem; font-weight: 700; color: var(--gym-surface-elevated); }
     </style>
+
+ 
 
 <div class="facturacion-shell my-3">
     <!-- Toolbar -->
@@ -149,12 +188,20 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
             <p class="text-muted small mb-0">Comprobantes de pago de membresías, servicios e ingresos del gimnasio.</p>
         </div>
 
+        <div class="col-md-6 text-md-end mt-2 mt-md-0">
+            <button type="button" class="btn btn-gym" data-bs-toggle="modal" data-bs-target="#modalNuevaFactura">
+                <i class="bi bi-plus-lg"></i> Nueva factura
+            </button>
+        </div>
+    </div>
+
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-secondary" onclick="window.print()">
                 <i class="bi bi-printer me-1"></i> Imprimir Libro Contable
             </button>
         </div>
     </div>
+
 
     <!-- KPIs Financieros -->
     <div class="row g-3 mb-4">
@@ -193,11 +240,11 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
                 <div class="stat-card-top">
                     <div class="stat-icon">
                         <i class="bi bi-receipt"></i>
-                    </div>
+                    </div> 
                     <span class="stat-trend-badge">Emitidos</span>
                 </div>
                 <div>
-                    <div class="stat-value"><?= count($facturas) ?></div>
+                    <div class="stat-value"><?= count($listaFacturas) ?></div>
                     <div class="stat-label">Total de Facturas</div>
                 </div>
             </div>
@@ -218,6 +265,118 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
             </div>
         </div>
     </div>
+<div class="modal fade" id="modalNuevaFactura" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border: 1px solid var(--gym-amarillo-osc);">
+
+            <div class="modal-header" style="background-color: var(--gym-amarillo-osc);">
+                <h5 class="modal-title" style="color: #ffffff;">
+                    <i class="bi bi-receipt"></i> Nueva factura
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+                <form id="formNuevaFactura" method="POST" action="Principal.php?page=facturacion">
+
+                <div class="modal-body" style="background-color: var(--gym-negro); color: #ffffff;">
+
+                    <div class="row g-3 mb-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Cliente</label>
+                            <select name="id_cliente" id="facturaCliente" class="form-select" required>
+                                <option value="">Seleccione un cliente</option>
+                                <?php foreach ($listaClientes as $cliente): ?>
+                                    <option value="<?= (int) $cliente['id_cliente'] ?>">
+                                        <?= htmlspecialchars($cliente['nombre_cliente']) ?>
+                                        (<?= htmlspecialchars($cliente['cedula']) ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Método de pago</label>
+                            <select name="metodo_pago" class="form-select" required>
+                                <option value="efectivo">Efectivo</option>
+                                <option value="transferencia">Transferencia</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- tipo de factura: membresía o productos, nunca mezclados -->
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de factura</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="tipo_factura" id="tipoMembresia" value="membresia" checked>
+                            <label class="btn btn-outline-warning" for="tipoMembresia">
+                                <i class="bi bi-wallet"></i> Membresía
+                            </label>
+                            <input type="radio" class="btn-check" name="tipo_factura" id="tipoProductos" value="productos">
+                            <label class="btn btn-outline-warning" for="tipoProductos">
+                                <i class="bi bi-basket"></i> Productos
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- membresía del cliente -->
+                    <div class="mb-3" id="seccionMembresia">
+                        <label class="form-label">
+                            <i class="bi bi-wallet"></i> Membresía a facturar
+                        </label>
+                        <select name="id_membresia" id="facturaMembresia" class="form-select" disabled>
+                            <option value="">Seleccione primero un cliente</option>
+                        </select>
+                    </div>
+
+                    <!-- productos -->
+                    <div id="seccionProductos" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label mb-0"><i class="bi bi-basket"></i> Productos</label>
+                            <button type="button" id="btnAgregarItem" class="btn btn-sm btn-gym">
+                                <i class="bi bi-plus-lg"></i> Agregar producto
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-dark table-bordered align-middle mb-0 tabla-items">
+                                <thead>
+                                    <tr>
+                                        <th style="width:40%">Producto</th>
+                                        <th style="width:15%">Cant.</th>
+                                        <th style="width:18%">Precio</th>
+                                        <th style="width:18%">Subtotal</th>
+                                        <th style="width:9%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsFactura">
+                                    <tr id="filaSinItems">
+                                        <td colspan="5" class="text-center text-muted">
+                                            Aún no has agregado productos.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- total -->
+                    <div class="text-end mt-3">
+                        <span class="me-2">Total a pagar:</span>
+                        <span class="total-factura" id="totalFactura">C$ 0.00</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="background-color: var(--gym-negro);">
+                    <button type="submit" name="agregar_factura" value="1" id="btnGuardarFactura"
+                            class="btn" style="background-color: var(--gym-amarillo-osc);" disabled>
+                        <i class="bi bi-floppy"></i> Guardar factura
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <!-- Búsqueda y Filtro -->
     <div class="row mb-3 align-items-center">
@@ -234,53 +393,51 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
         <table class="table gym-table align-middle text-center mb-0" id="tablaFacturas">
             <thead>
                 <tr>
-                    <th>N° Factura</th>
-                    <th class="text-start">Cliente</th>
-                    <th>Concepto</th>
-                    <th>Monto (C$)</th>
-                    <th>Método de Pago</th>
-                    <th>Fecha de Emisión</th>
-                    <th>Estado</th>
+                <th>N° Factura</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Método de pago</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (!empty($facturas)): ?>
-                    <?php foreach ($facturas as $f): ?>
+                    <?php foreach ($listaFacturas as $f): ?>
+                        <?php
+                        $tipos = array_unique(array_column($f['detalles'] ?? [], 'tipo'));
+                        if (count($tipos) > 1)                 { $concepto = 'Membresía y productos'; }
+                        elseif (in_array('membresia', $tipos)) { $concepto = 'Membresía'; }
+                        else                                   { $concepto = 'Productos'; }
+
+                        $anulada = ($f['estado'] ?? 'pagada') === 'anulada';
+                        $numero  = str_pad((string) $f['id_factura'], 6, '0', STR_PAD_LEFT);
+                        ?>
                         <tr>
-                            <td>
-                                <span class="folio-tag">#FAC-<?= str_pad((string)$f['id_facturacion'], 5, '0', STR_PAD_LEFT) ?></span>
-                            </td>
-                            <td class="text-start fw-semibold text-gym-main">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="venc-avatar" style="width: 30px; height: 30px; border-radius: 6px; font-size: 0.75rem; background: var(--gym-surface-elevated); color: var(--gym-primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                                        <?= strtoupper(substr($f['nombre_cliente'] ?? 'C', 0, 1)) ?>
-                                    </div>
-                                    <div>
-                                        <div><?= htmlspecialchars($f['nombre_cliente'] ?? 'Cliente General') ?></div>
-                                        <div class="text-muted small font-monospace"><?= htmlspecialchars($f['cedula'] ?? '—') ?></div>
-                                    </div>
-                                </div>
-                            </td>
+                        <td><?= htmlspecialchars($numero) ?></td>
+                        <td>
+                            <?= htmlspecialchars($f['nombre_cliente']) ?><br>
+                            <small class="text-muted"><?= htmlspecialchars($f['cedula'] ?? '') ?></small>
+                        </td>
+                        <td><?= date('d/m/Y', strtotime($f['fecha_factura'])) ?></td>
+                        <td><?= $concepto ?></td>
+                        <td><?= $f['metodo_pago'] === 'efectivo'
+                                    ? '<i class="bi bi-cash-coin"></i> Efectivo'
+                                    : '<i class="bi bi-bank"></i> Transferencia' ?></td>
+                        <td>C$ <?= number_format((float) $f['total'], 2) ?></td>
+                        <td>
+                            <span class= "badge-gym-active" <?= $anulada ? 'badge-anulada' : 'badge-pagada' ?>">
+                                <i class="bi bi-check2-circle"></i> 
+                                <?= $anulada ? 'Anulada' : 'Pagada' ?>
+                            </span>
+                        </td>
                             <td>
                                 <span class="badge" style="background-color: var(--gym-surface-elevated); color: var(--gym-text-main); border: 1px solid var(--gym-border);">
-                                    Membresía Gimnasio
-                                </span>
-                            </td>
-                            <td class="fw-bold text-gym-main font-monospace">
-                                C$ <?= number_format((float)$f['costo'], 2) ?>
-                            </td>
-                            <td>
-                                <span class="badge-metodo">
-                                    <i class="bi <?= ($f['metodo_pago'] ?? '') === 'efectivo' ? 'bi-cash' : 'bi-credit-card' ?> me-1"></i>
-                                    <?= ucfirst($f['metodo_pago'] ?? 'efectivo') ?>
-                                </span>
-                            </td>
-                            <td class="text-muted">
-                                <?= date('d/m/Y', strtotime($f['fecha_facturacion'])) ?>
-                            </td>
-                            <td>
-                                <span class="badge-gym-active">
-                                    <i class="bi bi-check2-circle"></i> Pagada
+                                    
+                                    Pagos realizados 
+
                                 </span>
                             </td>
                         </tr>
@@ -294,6 +451,26 @@ $promedioFactura = count($facturas) > 0 ? ($totalFacturado / count($facturas)) :
         </table>
     </div>
 </div>
+<!-- datos para javascript -->
+<script>
+    window.facturas   = <?= json_encode($listaFacturas,   JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
+    window.productos  = <?= json_encode($listaProductos,  JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
+    window.membresias = <?= json_encode($listaMembresias, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
+</script>
+
+<!-- javascript -->
+<script src="../js/notifications.js"></script>
+<script src="../js/Facturacion.js"></script>
+
+<?php if ($toast !== null): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    window.mostrarNotificacion(
+        <?= json_encode($toast, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+    );
+});
+</script>
+<?php endif; ?>
 
 <script>
 document.getElementById('buscadorFacturas').addEventListener('input', function () {

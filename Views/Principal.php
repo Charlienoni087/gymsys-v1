@@ -26,7 +26,7 @@ $modulosPermitidos = $permisos[$rolUsuario] ?? $permisos['administrador'];
 $titulosModulos = [
     'dashboard'   => 'Dashboard General',
     'clientes'    => 'Gestión de Clientes',
-    'membresias'  => 'Control de Membresías',
+    'membresias'  => 'Control de Membresías', 
     'productos'   => 'Inventario y Productos',
     'facturacion' => 'Facturación y Finanzas',
     'reportes'    => 'Reportes del Sistema',
@@ -261,7 +261,7 @@ $vRep  = file_exists($cssDir . 'reportes.css') ? filemtime($cssDir . 'reportes.c
                         break;
 
                     case 'facturacion':
-                        include 'Facturacion.php';
+                        require_once __DIR__ . '/../Controllers/FacturacionController.php';
                         break;
 
                     case 'reportes':
