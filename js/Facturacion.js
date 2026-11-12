@@ -143,6 +143,10 @@ if (document.getElementById('formNuevaFactura')) {
  
         cuerpoItems.appendChild(fila);
         recalcular();
+
+        /* con varios productos: baja hasta la fila nueva y enfoca su select */
+        fila.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        fila.querySelector('.item-producto').focus({ preventScroll: true });
     });
  
     /* eventos dentro de la tabla de ítems */
@@ -202,6 +206,13 @@ if (document.getElementById('formNuevaFactura')) {
         aplicarTipo();
     });
  
+    /* la lista de productos hace scroll por dentro y no empuja el total fuera de pantalla */
+    const contenedorItems = cuerpoItems.closest('.table-responsive');
+    if (contenedorItems) {
+        contenedorItems.style.maxHeight = '320px';
+        contenedorItems.style.overflowY = 'auto';
+    }
+
     /* estado inicial */
     aplicarTipo();
 
@@ -266,7 +277,10 @@ if (tablaFacturas) tablaFacturas.addEventListener('click', function (e) {
     }
 });
  
-document.getElementById('btnImprimirFactura').addEventListener('click', function () {
-    window.print();
-});
- 
+/* el botón solo existe en el historial */
+const btnImprimirFactura = document.getElementById('btnImprimirFactura');
+if (btnImprimirFactura) {
+    btnImprimirFactura.addEventListener('click', function () {
+        window.print();
+    });
+}
